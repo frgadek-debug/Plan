@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1f3b33">
+<title>Plan obowiązków</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Plan">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday study habit: steady, encouraging, no noise
+   IDEA a classroom chalkboard with today's timetable chalked on it, the notebook below
+   PICTURE the board: the block happening now written large with its countdown, day progress, the week as seven chalk cells; Python tab: 13 modules as columns of lesson cells
+   COLOUR chalkboard green field, chalk white, chalk yellow accent; one chalk colour per goal
+   TYPE Archivo 800 display + Inter text
+   LAYOUT laptop: board splits now-card | progress and week, timetable below beside week totals; phone: board, tabs, timetable */
+:root{color-scheme:light;--bg:#ffffff;--ink:#16201c;--mut:#56635d;--line:#e1e6e3;--card:#f4f7f5;--board:#1f3b33;--chalk:#f4f2ea;--chalk2:#c3cfc8;--yel:#f6d365;--fill:#1f6b4f;--miss:#b3261e;--nowbg:#fdf3d1;--c-school:#c99700;--c-fr:#2f63d8;--c-en:#d23a33;--c-py:#1f8a58;--c-d3:#e06a10;--c-web:#bf2d82;--c-tr:#5b4fd1;--c-plan:#7a8680}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#0f1513;--ink:#e8ede9;--mut:#a2afa8;--line:#26312c;--card:#151d1a;--board:#17302a;--fill:#5cc896;--miss:#ff8a80;--nowbg:#25291f;--c-school:#f2c94c;--c-fr:#7ea2ff;--c-en:#ff8a80;--c-py:#5fd39a;--c-d3:#ffa45c;--c-web:#ff8ccc;--c-tr:#a99dff;--c-plan:#9aa6a0}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#0f1513;--ink:#e8ede9;--mut:#a2afa8;--line:#26312c;--card:#151d1a;--board:#17302a;--fill:#5cc896;--miss:#ff8a80;--nowbg:#25291f;--c-school:#f2c94c;--c-fr:#7ea2ff;--c-en:#ff8a80;--c-py:#5fd39a;--c-d3:#ffa45c;--c-web:#ff8ccc;--c-tr:#a99dff;--c-plan:#9aa6a0}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:Archivo,Inter,system-ui,sans-serif;letter-spacing:-.02em;line-height:1.05;margin:0;font-weight:800}
+p{margin:0}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,4vw,env(safe-area-inset-left,0px));padding-right:max(16px,4vw,env(safe-area-inset-right,0px))}
+.k-school,.k-mat,.k-fiz,.k-bio,.k-exam{--c:var(--c-school)}.k-fr{--c:var(--c-fr)}.k-en{--c:var(--c-en)}.k-py{--c:var(--c-py)}.k-d3{--c:var(--c-d3)}.k-web{--c:var(--c-web)}.k-tr{--c:var(--c-tr)}.k-plan{--c:var(--c-plan)}
+.board{background:var(--board);color:var(--chalk);padding:clamp(20px,3.5vw,44px) 0 clamp(20px,3vw,34px)}
+.bgrid{display:grid;gap:clamp(20px,3vw,44px)}
+@media(min-width:900px){.bgrid{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}}
+.date{font-size:clamp(32px,5vw,48px);text-wrap:balance}
+.meta{color:var(--chalk2);margin:8px 0 18px}
+.nowcard{border:2px solid rgba(244,242,234,.26);border-radius:18px;padding:clamp(16px,2.4vw,26px)}
+.lbl{color:var(--chalk2);font-size:14px;font-weight:600}
+.nowcard h2{font-size:clamp(32px,5.2vw,46px);margin:8px 0 10px;color:var(--chalk)}
+.nowcard .task{margin:0 0 18px;max-width:62ch;color:var(--chalk)}
+.nowrow{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.count{font-family:Archivo,Inter,sans-serif;font-weight:800;font-size:clamp(28px,4.4vw,40px);line-height:1;color:var(--yel);font-variant-numeric:tabular-nums;white-space:nowrap;margin-right:auto}
+.missline{margin-top:16px;padding-top:12px;border-top:1px solid rgba(244,242,234,.18);color:var(--chalk2);font-size:14px}
+.btn{min-height:44px;padding:0 18px;border-radius:999px;border:2px solid transparent;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center}
+.btn.y{background:var(--yel);color:#1b2a24}
+.btn.o{background:transparent;border-color:rgba(244,242,234,.45);color:var(--chalk)}
+.btn:active,.b2:active,.b3:active,.chk:active{transform:scale(.97)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.side{display:flex;flex-direction:column;gap:22px;justify-content:space-between}
+.pl{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.big{font-family:Archivo,Inter,sans-serif;font-weight:800;font-size:clamp(32px,4.6vw,44px);line-height:1;font-variant-numeric:tabular-nums}
+.of{color:var(--chalk2)}
+.bar{height:10px;border-radius:99px;background:rgba(244,242,234,.16);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--yel);border-radius:inherit;transition:width .5s ease}
+.slbl{color:var(--chalk2);font-size:14px;font-weight:600;margin-bottom:8px}
+.ribbon{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.rc{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:0;color:var(--chalk2);font-size:13px;cursor:pointer}
+.cell{width:100%;height:56px;border-radius:10px;border:2px solid rgba(244,242,234,.24);position:relative;overflow:hidden}
+.cell i{position:absolute;left:0;right:0;bottom:0;background:var(--chalk);opacity:.85}
+.rc.td .cell{border-color:var(--yel)}
+.rc.td{color:var(--chalk);font-weight:600}
+.streak{font-size:16px}
+.streak b{font-family:Archivo,Inter,sans-serif;font-size:22px;color:var(--yel)}
+.sync{font-size:13px;color:var(--chalk2)}
+.tabs{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs a{flex:none;display:flex;align-items:center;min-height:52px;padding:0 13px;color:var(--mut);text-decoration:none;font-weight:600;border-bottom:3px solid transparent}
+.tabs a[aria-current=page]{color:var(--ink);border-bottom-color:var(--fill)}
+main{padding-top:24px;padding-bottom:72px}
+.dgrid,.wgrid{display:grid;gap:32px}
+@media(min-width:1000px){.dgrid,.wgrid{grid-template-columns:minmax(0,1fr) 340px;align-items:start}.aside{position:sticky;top:72px}}
+.dayhead,.vh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.dayhead h2,.vh h2{font-size:clamp(24px,3.4vw,32px);margin-right:auto}
+.sub{color:var(--mut);margin-bottom:16px}
+.nav{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:20px;line-height:1}
+.tbtn{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;white-space:nowrap}
+.toggles{display:flex;flex-wrap:wrap;gap:8px}
+.tg{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:15px}
+.tg[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hint{color:var(--mut);font-size:14px;margin:8px 0 0}
+.list{list-style:none;margin:18px 0 0;padding:0}
+.blk{display:grid;grid-template-columns:4.4em minmax(0,1fr) auto;gap:4px 16px;padding:16px 12px;margin:0 -12px;border-top:1px solid var(--line);align-items:start}
+.blk.now{background:var(--nowbg);border-radius:16px;border-top-color:transparent}
+.blk.now+li{border-top-color:transparent}
+.tm{font-variant-numeric:tabular-nums}
+.tm b{display:block;font-family:Archivo,Inter,sans-serif;font-weight:800;font-size:22px;line-height:1.15;white-space:nowrap}
+.tm span{color:var(--mut);font-size:13px;white-space:nowrap}
+.blk h3{font-size:21px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px}
+.blk h3::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+.dur{font-family:Inter,system-ui,sans-serif;font-weight:500;font-size:14px;color:var(--mut);letter-spacing:0;white-space:nowrap}
+.tag{font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:600;letter-spacing:0;background:var(--ink);color:var(--bg);padding:2px 9px;border-radius:99px}
+.tag.m{background:transparent;color:var(--miss);box-shadow:inset 0 0 0 1px var(--miss)}
+.task{margin:6px 0 4px}
+.task b{font-weight:600}
+.behind{color:var(--miss);font-size:14px;margin:2px 0 4px}
+.nt{display:block;width:100%;margin:8px 0 4px;min-height:44px;font:inherit;font-size:16px;line-height:1.4;padding:9px 12px;border:1px solid color-mix(in srgb,var(--ink) 20%,transparent);border-radius:12px;background:var(--bg);color:var(--ink);resize:vertical}
+.nt::placeholder{color:var(--mut)}
+.acts{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+details{flex:1 1 220px}
+summary{cursor:pointer;color:var(--mut);font-size:14px;min-height:40px;display:flex;align-items:center;gap:6px;list-style:none;width:max-content;max-width:100%}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";font-weight:700;width:1em}
+details[open]>summary::before{content:"–"}
+.how{color:var(--mut);font-size:15px;padding-bottom:6px}
+ol.zad{margin:2px 0 8px;padding-left:1.3em;display:grid;gap:6px;font-size:15px}
+.sbtn{min-height:44px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center}
+.chk{width:48px;height:48px;border-radius:14px;border:2px solid color-mix(in srgb,var(--ink) 25%,transparent);background:var(--bg);cursor:pointer;display:grid;place-items:center;transition:background .2s,border-color .2s}
+.chk svg{width:26px;height:26px;stroke:transparent;transition:stroke .2s}
+.done .chk{background:var(--fill);border-color:var(--fill)}
+.done .chk svg{stroke:var(--bg)}
+.done .task,.done h3{opacity:.5}
+.miss .tm b{color:var(--miss)}
+.gap{padding:8px 0 8px calc(4.4em + 16px);color:var(--mut);font-size:14px;border-top:1px dashed var(--line)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.panel h3{font-size:21px;margin-bottom:12px}
+.arow{display:grid;grid-template-columns:9em minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0;font-size:15px}
+.abar{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.abar i{display:block;height:100%;background:var(--c);border-radius:inherit}
+.anum{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mut);font-size:14px;text-align:right}
+.tot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-weight:600}
+.wrow{display:grid;grid-template-columns:8.5em minmax(0,1fr) 3.4em;gap:14px;align-items:center;width:100%;padding:14px 0;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer}
+.wrow.td .wd{font-weight:700}
+.wd small{display:block;color:var(--mut);font-size:13px}
+.segs{display:flex;gap:3px;height:24px}
+.segs i{display:block;border-radius:5px;background:color-mix(in srgb,var(--c) 22%,var(--bg))}
+.segs i.on{background:var(--c)}
+.pct{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.mgrid{display:grid;gap:28px}
+.top2{display:grid;gap:28px}
+@media(min-width:1000px){.top2{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:stretch}}
+.scroll{overflow-x:auto;padding-bottom:6px}
+.heat{display:grid;grid-template-columns:2.4em repeat(26,minmax(0,1fr));gap:3px;min-width:520px}
+.ml{font-size:13px;color:var(--mut);white-space:nowrap;overflow:visible;height:20px}
+.hl{font-size:13px;color:var(--mut);line-height:1}
+.hc{aspect-ratio:1;border-radius:4px;background:var(--line)}
+.hc.h1{background:color-mix(in srgb,var(--fill) 35%,var(--bg))}
+.hc.h2{background:color-mix(in srgb,var(--fill) 68%,var(--bg))}
+.hc.h3{background:var(--fill)}
+.hc.fut{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.hc.td{box-shadow:inset 0 0 0 2px var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--mut);font-size:13px;margin-top:10px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5em,1fr));gap:12px 20px;margin-top:18px}
+.figs b{display:block;font-family:Archivo,Inter,sans-serif;font-size:clamp(28px,3.6vw,36px);line-height:1.1}
+.figs span{color:var(--mut);font-size:14px}
+.rules{margin:0;padding-left:1.3em;display:grid;gap:10px}
+.goals{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.goal h3{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.goal h3::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c);flex:none}
+.hrs{color:var(--mut);font-size:14px;margin-bottom:10px}
+.gtxt{margin-bottom:14px}
+.ms{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.ms.cur{background:color-mix(in srgb,var(--c) 14%,var(--card));border-radius:12px;padding:12px;border-top-color:transparent}
+.ms input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--fill)}
+.ms small{display:block;color:var(--mut);font-size:13px}
+.ownrow{display:grid;grid-template-columns:7em minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0;font-size:15px}
+.pytop{display:grid;gap:24px;margin-bottom:36px}
+@media(min-width:1000px){.pytop{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:start}}
+.pyr{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:6px;margin-top:16px}
+.pyc{display:flex;flex-direction:column;gap:4px;align-items:stretch}
+.pyc button{height:20px;border-radius:5px;border:0;padding:0;background:var(--line);cursor:pointer}
+.pyc button.d{background:var(--c-py)}
+.pyc button.late{background:color-mix(in srgb,var(--miss) 30%,var(--bg))}
+.pyc button.cur{box-shadow:0 0 0 2px var(--ink)}
+.pyc span{font-size:13px;color:var(--mut);text-align:center}
+.lesson{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,2.6vw,28px)}
+.lesson h3{font-size:clamp(26px,3.6vw,34px);margin:8px 0 6px}
+.lesson .lbl{color:var(--mut)}
+.lesson ol{margin:14px 0 18px;padding-left:1.3em;display:grid;gap:10px}
+.lrow{display:flex;flex-wrap:wrap;gap:10px}
+.prompt{margin-top:12px;font-size:14px;color:var(--mut);background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;user-select:all}
+.mod{border-top:1px solid var(--line)}
+.mod>summary{font-family:Archivo,Inter,sans-serif;font-weight:800;font-size:21px;color:var(--ink);min-height:56px;width:100%;letter-spacing:-.01em}
+.mod>summary small{font-family:Inter,sans-serif;font-weight:500;font-size:14px;color:var(--mut);margin-left:auto;padding-left:12px;white-space:nowrap}
+.ls{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.ls.cur{background:color-mix(in srgb,var(--c-py) 12%,var(--bg));border-radius:12px;padding:12px;border-top-color:transparent}
+.ls input{width:22px;height:22px;margin:3px 0 0;accent-color:var(--fill)}
+.ls small{display:block;color:var(--mut);font-size:13px}
+.ls small.late{color:var(--miss)}
+.ls details summary{min-height:36px}
+.form{display:grid;gap:26px;max-width:640px}
+.times{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5em,1fr));gap:10px}
+.f{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mut);font-weight:600}
+.sw{display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer}
+.sw input{width:22px;height:22px;accent-color:var(--fill)}
+input[type=time],input[type=date],textarea{font:inherit;font-size:16px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--ink) 22%,transparent);border-radius:10px;background:var(--bg);color:var(--ink);min-height:44px;width:100%}
+#sImp{min-height:110px;resize:vertical;font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.b2{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.b3{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid color-mix(in srgb,var(--ink) 30%,transparent);background:transparent;font-weight:600;cursor:pointer}
+.b3.warn{border-color:var(--miss);color:var(--miss)}
+.form h3{font-size:21px;margin-bottom:6px}
+.note{color:var(--mut);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;opacity:0;transition:opacity .2s;pointer-events:none;font-weight:600;max-width:calc(100% - 32px);z-index:20}
+.toast.on{opacity:1}
+[hidden]{display:none!important}
+@media(max-width:600px){.blk{grid-template-columns:3.6em minmax(0,1fr) auto;gap:4px 12px}.tm b{font-size:19px}.gap{padding-left:calc(3.6em + 12px)}.blk h3{font-size:19px}.wrow{grid-template-columns:6.4em minmax(0,1fr) 3em;gap:10px}.cell{height:44px}.arow{grid-template-columns:8.6em minmax(0,1fr) auto;font-size:14px}.pyr{gap:3px}.pyc button{height:16px}.mod>summary{font-size:18px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="board">
+  <div class="wrap bgrid">
+    <div>
+      <h1 class="date" id="bDate">Plan dnia</h1>
+      <p class="meta" id="bMeta"></p>
+      <div class="nowcard" id="bNow"></div>
+    </div>
+    <div class="side">
+      <div>
+        <div class="pl"><span class="big" id="bDone">0</span><span class="of" id="bOf">z 0 min dziś</span></div>
+        <div class="bar"><i id="bBar"></i></div>
+      </div>
+      <div>
+        <p class="slbl">Ten tydzień</p>
+        <div class="ribbon" id="bRib"></div>
+      </div>
+      <p class="streak" id="bStreak"></p>
+      <p class="sync" id="bSync"></p>
+    </div>
+  </div>
+</header>
+<nav class="tabs" aria-label="Widoki">
+  <div class="wrap">
+    <a href="#dzis">Dziś</a>
+    <a href="#tydzien">Tydzień</a>
+    <a href="#python">Python</a>
+    <a href="#mapa">6 miesięcy</a>
+    <a href="#ustawienia">Ustawienia</a>
+  </div>
+</nav>
+<main class="wrap">
+  <section class="view" id="v-dzis">
+    <div class="dgrid">
+      <div>
+        <div class="dayhead">
+          <h2 id="dTitle">Dziś</h2>
+          <button class="nav" id="dPrev" aria-label="Poprzedni dzień">‹</button>
+          <button class="tbtn" id="dToday">Dziś</button>
+          <button class="nav" id="dNext" aria-label="Następny dzień">›</button>
+        </div>
+        <p class="sub" id="dSub"></p>
+        <div class="toggles" id="dTog"></div>
+        <p class="hint" id="dHint"></p>
+        <ol class="list" id="dList"></ol>
+      </div>
+      <aside class="aside">
+        <div class="panel">
+          <h3>Minuty w tym tygodniu</h3>
+          <div id="aBars"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="view" id="v-tydzien" hidden>
+    <div class="vh">
+      <h2 id="wTitle">Tydzień</h2>
+      <button class="nav" id="wPrev" aria-label="Poprzedni tydzień">‹</button>
+      <button class="tbtn" id="wNow">Ten</button>
+      <button class="nav" id="wNext" aria-label="Następny tydzień">›</button>
+    </div>
+    <p class="sub" id="wSub"></p>
+    <div class="wgrid">
+      <div id="wRows"></div>
+      <div class="panel">
+        <h3>Cele w tym tygodniu</h3>
+        <div id="wBars"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-python" hidden>
+    <div class="pytop">
+      <div>
+        <div class="vh"><h2>Python: od zera do poziomu zaawansowanego</h2></div>
+        <p class="sub">78 lekcji w 13 modułach: poniedziałek i czwartek po 75 min, niedziela 60 min (projekt). Blok Pythona zawsze pokazuje następną lekcję, więc gdy opuścisz dzień, nic nie przepada, tylko plan się przesuwa.</p>
+        <div class="figs" id="pyFigs"></div>
+        <div class="pyr" id="pyRib" aria-label="Postęp lekcji: kolumna to moduł"></div>
+      </div>
+      <div id="pyCur"></div>
+    </div>
+    <div class="vh"><h2>Wszystkie moduły</h2></div>
+    <p class="sub">Daty to plan. Odhacz lekcję, gdy zrobisz wszystkie zadania; odhaczenie bloku Pythona w widoku Dziś zalicza lekcję automatycznie.</p>
+    <div id="pyMods"></div>
+  </section>
+
+  <section class="view" id="v-mapa" hidden>
+    <div class="mgrid">
+      <div class="top2">
+        <div>
+          <div class="vh"><h2>Pół roku nauki</h2></div>
+          <p class="sub" id="mSub"></p>
+          <div class="scroll" id="mHeat"></div>
+          <div class="legend">
+            <span><i style="background:var(--line)"></i>nic</span>
+            <span><i style="background:color-mix(in srgb,var(--fill) 35%,var(--bg))"></i>do połowy</span>
+            <span><i style="background:color-mix(in srgb,var(--fill) 68%,var(--bg))"></i>ponad połowa</span>
+            <span><i style="background:var(--fill)"></i>90% i więcej</span>
+          </div>
+          <div class="figs" id="mFigs"></div>
+        </div>
+        <div class="panel">
+          <h3>Zasady planu</h3>
+          <ol class="rules">
+            <li>Szkoła zawsze pierwsza. Jutro sprawdzian? Włącz „Jutro sprawdzian”, a umiejętności dnia zamienią się w naukę.</li>
+            <li>Gorszy dzień? „Lżejszy dzień” zostawia minimum: szkołę, 15 min francuskiego i 10 min angielskiego. Seria trwa, gdy zrobisz 70% planu dnia.</li>
+            <li>Na czas bloku telefon leży w innym pokoju, a w przerwie wstajesz od biurka.</li>
+            <li>Kładziesz się do 23:00. W czasie snu mózg utrwala to, czego się uczyłeś.</li>
+            <li>Co niedzielę przegląd tygodnia. Chcesz zmienić bloki albo kolejność? Napisz do Claude, a przebuduje plan.</li>
+          </ol>
+        </div>
+      </div>
+      <div>
+        <div class="vh"><h2>Cele i sprinty</h2></div>
+        <p class="sub">Francuski, 3D i strony mają po 13 dwutygodniowych sprintów, a matematyka i fizyka cel na każdy miesiąc. Bieżący temat pojawia się w bloku dnia; odhacz go tutaj, gdy go opanujesz.</p>
+        <div class="goals" id="mGoals"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-ustawienia" hidden>
+    <div class="form">
+      <div>
+        <h3>Aplikacja na telefonie</h3>
+        <div id="sInstall"></div>
+      </div>
+      <div>
+        <h3>Kiedy jesteś gotowy do nauki</h3>
+        <p class="note">Od tej godziny liczą się bloki danego dnia. Domyślnie: pon, wt, czw, pt 18:00 (powrót 17:30), śr 19:30 (powrót 19:00), sob 9:30, ndz 10:00.</p>
+        <div class="times" id="sTimes" style="margin-top:12px"></div>
+      </div>
+      <div>
+        <h3>Start planu</h3>
+        <p class="note">Od tego tygodnia liczy się 26 tygodni, 13 sprintów i 78 lekcji Pythona.</p>
+        <label class="f" style="margin-top:10px;max-width:16em">Pierwszy dzień
+          <input type="date" id="sStart"></label>
+      </div>
+      <div>
+        <h3>Timer</h3>
+        <label class="sw"><input type="checkbox" id="sSound"> Dźwięk i wibracja na koniec bloku</label>
+        <p class="note">Działa, gdy aplikacja jest otwarta.</p>
+      </div>
+      <div>
+        <h3>Synchronizacja</h3>
+        <p class="note" id="sSync"></p>
+      </div>
+      <div>
+        <h3>Kopia zapasowa</h3>
+        <p class="note">Skopiuj dane i wklej je na innym urządzeniu albo w drugiej wersji aplikacji.</p>
+        <div class="row"><button class="b2" id="sCopy">Kopiuj dane</button></div>
+        <label class="f" style="margin-top:14px">Wklej kopię, żeby ją wczytać
+          <textarea id="sImp" spellcheck="false"></textarea></label>
+        <div class="row"><button class="b3" id="sLoad">Wczytaj kopię</button><button class="b3 warn" id="sReset">Wyczyść postępy</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+{
+const IS_PWA=true;
+const LS='planer-obowiazkow-v1';
+const DN=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+const DS=['Nd','Pn','Wt','Śr','Cz','Pt','Sb'];
+const MG=['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+const MS=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const DEF_READY={0:'10:00',1:'18:00',2:'18:00',3:'19:30',4:'18:00',5:'18:00',6:'09:30'};
+const DEF_START='2026-11-30';
+const GROUPS=[['school','Szkoła'],['fr','Francuski'],['en','Angielski'],['py','Python'],['d3','Projektowanie 3D'],['web','Strony WWW'],['tr','Trading']];
+const AREAS={mat:['Matematyka','school'],fiz:['Fizyka','school'],bio:['Biologia','school'],exam:['Nauka na sprawdzian','school'],fr:['Francuski','fr'],en:['Angielski','en'],py:['Python','py'],d3:['Projektowanie 3D','d3'],web:['Strony WWW','web'],tr:['Trading','tr'],plan:['Domknięcie dnia','plan'],week:['Przegląd tygodnia','plan']};
+const SKILL=new Set(['py','d3','web','tr']);
+const OWN={en:'Co dziś robisz z angielskiego?',tr:'Co dziś robisz z tradingu?',bio:'Co dziś robisz z biologii?',plan:'Czego się dziś nauczyłeś?',week:'Twój cel na przyszły tydzień'};
+const B=(id,a,m,o)=>Object.assign({id,a,m},o||{});
+const TPL={
+1:[B('s','mat',75,{core:1,lite:45}),{gap:15},B('fr','fr',30,{core:1,lite:15}),{gap:10},B('k','py',75),{gap:10},B('en','en',20,{core:1,lite:10}),B('end','plan',5,{core:1})],
+2:[B('s','fiz',75,{core:1,lite:45}),{gap:15},B('fr','fr',30,{core:1,lite:15}),{gap:10},B('k','d3',75),{gap:10},B('en','en',20,{core:1,lite:10}),B('end','plan',5,{core:1})],
+3:[B('s','bio',45,{core:1,lite:30}),{gap:10},B('fr','fr',30,{core:1,lite:15}),{gap:5},B('k','tr',30),B('en','en',20,{core:1,lite:10}),B('end','plan',5,{core:1})],
+4:[B('s','mat',75,{core:1,lite:45}),{gap:15},B('fr','fr',30,{core:1,lite:15}),{gap:10},B('k','py',75),{gap:10},B('en','en',20,{core:1,lite:10}),B('end','plan',5,{core:1})],
+5:[B('s','bio',60,{core:1,lite:30}),{gap:15},B('fr','fr',30,{core:1,lite:15}),{gap:10},B('k','web',60),B('en','en',20,{core:1,lite:10}),B('end','plan',5,{core:1})],
+6:[B('s','mat',60,{core:1,lite:45}),{gap:10},B('s2','bio',45),{gap:15},B('fr','fr',30,{core:1,lite:15}),{gap:10},B('k','d3',90),{gap:70,label:'Obiad i wolne'},B('k2','web',90),B('end','plan',5,{core:1})],
+0:[B('s','fiz',60,{core:1,lite:40}),{gap:15},B('fr','fr',30,{core:1,lite:15}),{gap:15},B('k','py',60),{gap:240,label:'Wolne popołudnie'},B('k2','tr',60),B('en','en',30,{core:1,lite:15}),B('end','week',15,{core:1,lite:10})]
+};
+const HOW={
+school:'Najpierw zadania domowe i to, co jest na jutro. Potem bieżący dział: 10 min teorii (notatka własnymi słowami), zadania, a na koniec 3 pytania do powtórki na fiszki.',
+exam:'Zamiast umiejętności dnia: lista zagadnień na sprawdzian, zadania z lekcji, a na koniec sprawdź się bez notatek.',
+fr:'10 min fiszek (Anki, 10 nowych słów) · 15 min lekcji z tematu sprintu · 5 min mówienia na głos, powtarzając za nagraniem.',
+d3:'Poradnik zajmuje najwyżej 1/3 czasu. Resztę spędzasz nad własnym modelem z tematu sprintu.',
+web:'Kod piszesz sam, a Claude go sprawdza i tłumaczy błędy. Na koniec zapisz, co działa, a co nie.',
+plan:'Odhacz bloki, zapisz jedną rzecz, której się dziś nauczyłeś, i zerknij na jutro.',
+week:'Zakładka Tydzień: ile minut dostał każdy cel i co przesunąć. Ustal jeden cel na następny tydzień.'
+};
+const ROAD={
+fr:['Wymowa, alfabet, powitania, être i avoir, liczby 0–20, rodzajniki le, la, un, une','Czasowniki na -er w présent, pytania, przeczenie ne…pas, rodzina, dni tygodnia, godziny','aller, faire, prendre, venir; futur proche (je vais + bezokolicznik); jedzenie i zakupy','Passé composé z avoir; opowiadasz, co robiłeś wczoraj; czas wolny','Passé composé z être, czasowniki zwrotne, Twoja rutyna dnia','Przymiotniki i ich zgodność, porównania, pogoda, ubrania; pierwszy tekst na 80 słów','Imparfait kontra passé composé; opowiadanie krótkiej historii','Zaimki le, la, lui, leur oraz y i en; podróże i miasto','Futur simple, plany na przyszłość; podcasty dla początkujących','Conditionnel, wyrażanie opinii; 10 min rozmowy z Claude po francusku','Subjonctif w podstawach (il faut que…), dyskusja na proste tematy','Słuchanie: serial z francuskimi napisami i shadowing','Powtórka i próbny arkusz DELF A2'],
+d3:['Interfejs Blendera, nawigacja, skróty, transformacje; poradnik „donut” od Blender Guru','Modelowanie: extrude, inset, bevel, loop cut; modyfikatory Mirror, Subdivision, Array','Low-poly asset: skrzynia, beczka, latarnia; czysta topologia i liczba trójkątów','UV unwrapping, materiały i tekstury','Światło, kamera, render w Eevee i Cycles; pierwszy render do portfolio','Eksport do Roblox Studio: FBX, skala, punkt obrotu, kolizje; test w grze','Hard-surface: części mecha albo broni, bevel i shading','Baking z high-poly na low-poly, normal mapy, tekstury PBR','Prosty rig i animacja obiektu','Asset pack: 5 spójnych modeli w jednym stylu','Portfolio: 8–10 renderów (ArtStation lub Behance), cennik i opis usług','Pierwsze zlecenia: 2–3 małe prace dla referencji (DevForum Roblox, serwery Discord)','Kolejne zlecenia i poprawki portfolio na podstawie opinii'],
+web:['Jak działa strona; HTML: struktura, nagłówki, linki, obrazy; VS Code i Live Server','CSS: kolory, fonty, box model, Flexbox','CSS Grid i responsywność: mobile-first, media queries','Pierwsza strona: Twoja wizytówka. Piszesz sam, Claude robi code review','JavaScript: zmienne, funkcje, DOM, zdarzenia','JavaScript w praktyce: formularz, localStorage, mini-aplikacja','Projektowanie: Figma, siatka, kolory, typografia; przeróbka wizytówki','Landing page dla wymyślonej firmy, w pełni responsywny','Publikacja: GitHub Pages albo Netlify, domena, podstawy SEO','Praca z AI: jak opisać Claude stronę, jak czytać i poprawiać wygenerowany kod','Strona z portfolio 3D i formularzem kontaktowym','Strona dla prawdziwej osoby: rodzina, znajomi, lokalna firma','Druga realna strona; portfolio stron gotowe do pokazania']
+};
+const SCHOOL=['Lista działów z rozszerzeń na ten rok i oceny ze sprawdzianów, z tego mapa słabych działów','Jedna kartka wzorów z matematyki i fizyki, uzupełniana co tydzień','Co tydzień zestaw zadań maturalnych CKE z działu, który był na lekcjach','Pierwszy arkusz z matematyki na czas, z działów, które już były','Arkusz z fizyki na czas; poprawa 3 najsłabszych działów','Powtórka całego półrocza i plan nauki na wakacje'];
+const GOAL={
+school:'Rozszerzenia na bieżąco: każdy dział przerabiasz w tygodniu, w którym jest na lekcjach, a od lutego dochodzą zadania maturalne CKE. Ten blok zawsze idzie pierwszy.',
+fr:'Realny cel na pół roku: A2 w stronę B1, czyli proste rozmowy o codzienności i rozumienie wolnych nagrań. Płynna rozmowa wymaga kilkuset godzin, więc dokładaj francuski poza planem: muzyka, seriale, YouTube.',
+d3:'Modelujesz i teksturujesz low-poly assety gotowe do Roblox Studio, masz 8–10 renderów w portfolio i pierwsze małe zlecenia. Platformy freelancerskie zwykle wymagają 18 lat: przed założeniem konta sprawdź regulamin albo działaj z rodzicem.',
+web:'Sam budujesz i publikujesz responsywną stronę w HTML, CSS i JavaScript, a Claude jest Twoim mentorem i recenzentem kodu. W portfolio 2–3 strony.'
+};
+const PY_MODS=[
+['Fundamenty w szybkim tempie',[
+['Start: Python, VS Code i terminal',['Zainstaluj Pythona z python.org (zaznacz „Add python.exe to PATH”) i VS Code z rozszerzeniem Python. W terminalu sprawdź: python --version.','Zmienne i typy: int, float, str, bool; type() i konwersje int(), float(), str(); f-stringi.','Napisz 3 skrypty: przelicznik °C na °F, wiek w dniach, powitanie z input().']],
+['Warunki i logika',['if, elif, else; operatory porównania oraz and, or, not; wartości „prawdziwe” i „fałszywe”.','Skrypty: rok przestępny, ocena szkolna z liczby punktów, najmniejsza z trzech liczb bez min().','Zabezpiecz input: gdy ktoś wpisze tekst zamiast liczby, wypisz komunikat (str.isdigit()).']],
+['Projekt: gra „zgadnij liczbę”',['while, for, range(), break, continue.','Gra: komputer losuje 1–100 (random.randint), podpowiada „za dużo” albo „za mało” i liczy próby.','Dodaj poziomy trudności i rekord najmniejszej liczby prób w jednej sesji.']],
+['Listy i krotki',['Indeksy, slicing [start:stop:step], append, insert, remove, pop, sort; len i in.','enumerate i zip w pętlach; krotki i rozpakowywanie (a, b = b, a).','Bez sum(), max() i sorted(): policz średnią, maksimum i medianę listy ocen.']],
+['Słowniki i zbiory',['dict: dodawanie, get, items, keys, values; słowniki zagnieżdżone.','set: unikalne elementy, część wspólna, suma i różnica zbiorów.','Licznik słów: wczytaj akapit tekstu i wypisz 10 najczęstszych słów.']],
+['Projekt: lista zadań w konsoli',['Menu w pętli: dodaj, usuń, oznacz jako zrobione, pokaż wszystkie.','Zadania trzymaj w liście słowników (tytuł, zrobione, priorytet).','Sortowanie po priorytecie; nazwy zmiennych po angielsku i czytelny kod.']]]],
+['Funkcje i czysty kod',[
+['Funkcje',['def, parametry, return, argumenty domyślne i nazwane; docstring.','Zasięg zmiennych: lokalne kontra globalne i dlaczego unikać global.','Przepisz grę z lekcji 3 na funkcje: losuj(), zapytaj(), graj().']],
+['*args, **kwargs i funkcje jako obiekty',['*args i **kwargs; rozpakowywanie argumentów * i **.','Funkcje jako wartości: przekazywanie funkcji do funkcji, lambda.','sorted(..., key=...): sortuj listę słowników po kilku polach naraz.']],
+['Comprehensions',['List, dict i set comprehension, z warunkiem if w środku.','15 krótkich zadań: kwadraty liczb parzystych, odwracanie słownika, filtrowanie słów i inne.','Porównaj z map i filter; zapisz, kiedy zwykła pętla jest czytelniejsza.']],
+['Teksty i wyrażenia regularne',['Metody str: split, join, strip, replace, startswith, find; formatowanie {x:.2f} i {s:>10}.','Moduł re: search, findall, sub i grupy.','Walidator: e-mail, siła hasła i numer telefonu w formacie 123-456-789.']],
+['Debugowanie i styl',['Czytanie tracebacku od dołu; typowe błędy: TypeError, KeyError, IndexError, NameError.','Debugger w VS Code: breakpoint, praca krok po kroku, podgląd zmiennych.','PEP 8 i ruff: pip install ruff, potem ruff check i ruff format na swoich plikach.']],
+['Projekt: quiz',['Pytania w liście słowników (treść, odpowiedzi, poprawna) w losowej kolejności.','Wynik i procent na końcu oraz lista błędnych odpowiedzi.','Zero zmiennych globalnych; każda funkcja robi jedną rzecz.']]]],
+['Pliki, błędy i moduły',[
+['Wyjątki',['try, except, else, finally; łap konkretne wyjątki, nigdy gołe except.','raise i własne klasy wyjątków.','Funkcja wczytaj_liczbe(), która pyta, aż użytkownik poda poprawną liczbę z zakresu.']],
+['Pliki i pathlib',['open() z with, tryby r, w, a; encoding="utf-8" dla polskich znaków.','pathlib: Path, exists, glob, mkdir, read_text, write_text.','Skrypt, który przegląda folder i wypisuje pliki pogrupowane po rozszerzeniu z łącznym rozmiarem.']],
+['Projekt: dziennik nauki w JSON',['Moduły csv (DictReader, DictWriter) i json (dump, load).','Zapisuj sesje nauki (data, przedmiot, minuty) do pliku JSON.','Raport: suma minut na przedmiot w tym tygodniu i eksport do CSV.']],
+['Moduły i struktura projektu',['import, from … import, własne moduły; if __name__ == "__main__".','Podziel dziennik nauki na pliki: storage.py, report.py, main.py.','Przejrzyj spis biblioteki standardowej na docs.python.org i zanotuj 5 modułów do sprawdzenia.']],
+['Biblioteka standardowa w praktyce',['datetime i timedelta: różnice dat, formatowanie, parsowanie.','collections: Counter, defaultdict, deque, namedtuple.','random i itertools (product, combinations): generator haseł i losowanie drużyn.']],
+['Projekt: menedżer wydatków',['Dodawanie wydatków z kategorią i datą, zapis do JSON.','Statystyki miesiąca: suma, kategoria z największymi wydatkami, średnia dzienna.','Obsługa błędów: pusty plik, zły format daty, ujemna kwota.']]]],
+['Narzędzia programisty',[
+['Środowiska wirtualne i pakiety',['python -m venv .venv, aktywacja w Windows, pip install, pip freeze > requirements.txt.','Po co izolować projekty; folder .venv nigdy nie trafia do repozytorium.','Dla chętnych: wypróbuj uv (szybki menedżer projektów) i porównaj z pip.']],
+['Git i GitHub',['git init, status, add, commit, log, diff; dobre opisy commitów.','Gałęzie: branch, switch, merge; plik .gitignore dla Pythona.','Załóż repozytorium na GitHubie i wypchnij menedżer wydatków (git push).']],
+['Projekt: prawdziwe CLI',['argparse: argumenty, opcje i podkomendy (add, list, report).','Biblioteka rich: kolorowe tabele i paski postępu.','Przerób menedżer wydatków tak, by działało: python wydatki.py add 25 jedzenie.']],
+['Testy z pytest',['pip install pytest; pliki test_*.py, assert, pytest -v.','Testy funkcji statystyk menedżera wydatków, łącznie z przypadkami brzegowymi.','TDD: najpierw test (np. walidacja kwoty), potem kod, który go spełnia.']],
+['Logging',['Moduł logging: poziomy DEBUG, INFO, WARNING, ERROR i format z datą.','Logi jednocześnie do pliku i do konsoli.','Zamień wszystkie printy diagnostyczne w projekcie na logging.']],
+['Projekt: porządne repozytorium',['Menedżer wydatków z testami, logami, requirements.txt i .gitignore.','README: co robi, jak zainstalować, przykłady użycia.','Kilka czystych commitów; obejrzyj repozytorium oczami obcej osoby.']]]],
+['Programowanie obiektowe',[
+['Klasy i obiekty',['class, __init__, self, atrybuty i metody.','Klasa a obiekt; atrybuty klasy kontra atrybuty instancji.','Klasa KontoBankowe: wpłata, wypłata z wyjątkiem przy braku środków, historia operacji.']],
+['Metody specjalne i property',['__repr__, __str__, __eq__, __lt__, __len__, __add__.','@property z walidacją, @classmethod i @staticmethod.','Klasa Ulamek z dodawaniem, porównywaniem i skracaniem.']],
+['Projekt: dziedziczenie w grze',['Dziedziczenie, super(), nadpisywanie metod.','Kompozycja: obiekt zbudowany z innych obiektów i kiedy jest lepsza od dziedziczenia.','Hierarchia postaci: Postac, Wojownik, Mag z różnymi atakami i walką turową.']],
+['dataclasses, enum i podpowiedzi typów',['@dataclass: pola, wartości domyślne, frozen, field(default_factory=list).','Enum dla stałych zestawów wartości (kategorie, statusy).','Type hints: int, str, list[str], dict[str, int], X | None; dopisz je do klas z poprzednich lekcji.']],
+['Abstrakcje i polimorfizm',['Moduł abc i klasy abstrakcyjne; typing.Protocol jako alternatywa.','Polimorfizm: wiele klas, jeden interfejs.','System płatności: Karta, Blik, Przelew z jedną metodą zaplac().']],
+['Projekt: system biblioteki',['Klasy Ksiazka, Czytelnik, Biblioteka; wypożyczenia z terminem zwrotu i karą.','Zapis i odczyt stanu do JSON (serializacja dataclass).','Testy pytest dla najważniejszych reguł.']]]],
+['Python pod maską',[
+['Model danych Pythona',['Zmienne jako etykiety; obiekty mutowalne i niemutowalne.','is kontra ==, copy kontra deepcopy; pułapka def f(x=[]).','5 zagadek „co wypisze ten kod?”: najpierw na kartce, potem sprawdź.']],
+['Iteratory i generatory',['Protokół iteratora: iter, next, StopIteration; własny iterator w klasie.','yield i generator expressions; leniwe przetwarzanie.','Generator, który czyta ogromny plik linia po linii i zwraca tylko pasujące wiersze.']],
+['itertools i functools',['itertools: chain, islice, groupby, accumulate, count.','functools: partial, lru_cache, reduce.','Fibonacci z lru_cache i bez: zmierz różnicę czasu.']],
+['Dekoratory',['Funkcje wyższego rzędu i domknięcia.','Dekorator z functools.wraps; dekorator z argumentami.','Napisz @mierz_czas, @ponow(proby=3) i @loguj_wywolanie.']],
+['Menedżery kontekstu',['Jak działa with: __enter__ i __exit__.','contextlib.contextmanager i yield.','Menedżer mierzący czas bloku kodu i drugi, który na chwilę zmienia folder roboczy.']],
+['Projekt: analizator logów',['Wygeneruj skryptem plik logów na 100 000 linii.','Analiza generatorami bez wczytywania całego pliku: błędy na godzinę, najczęstsze komunikaty.','CLI z argparse i dekorator mierzący czas działania.']]]],
+['Jakość kodu na poziomie pro',[
+['Typowanie na poważnie',['Unie (int | None), Callable, TypedDict, Literal, generyki (TypeVar).','mypy: instalacja, uruchomienie, poprawianie błędów.','Pełne typy w projekcie biblioteki i mypy bez błędów.']],
+['ruff i pre-commit',['Konfiguracja ruff w pyproject.toml: reguły i długość linii.','pre-commit: ruff i mypy uruchamiane przed każdym commitem.','Przejdź przez stary kod i popraw wszystko, co wskażą narzędzia.']],
+['Projekt: testy zaawansowane',['pytest.mark.parametrize, fixtures z zakresem, conftest.py.','unittest.mock i monkeypatch: podmiana czasu, losowości i plików.','coverage: zmierz pokrycie i dopisz testy do ponad 80%.']],
+['Własny pakiet',['pyproject.toml, układ src/, instalacja pip install -e .','Punkt wejścia: Twoje CLI jako komenda w terminalu.','Zbuduj paczkę (python -m build) i zainstaluj ją w czystym venv.']],
+['Projektowanie kodu',['Zasady SOLID na przykładach w Pythonie.','Wstrzykiwanie zależności zamiast plików i API wpisanych na sztywno.','Refaktoryzacja menedżera wydatków: magazyn danych do podmiany (JSON albo pamięć).']],
+['Projekt: refaktoryzacja starego kodu',['Weź swój wcześniejszy projekt w Pythonie (np. bota) i opisz w komentarzach każdą część.','Dodaj typy, podziel na moduły, usuń powtórzenia.','Napisz testy dla funkcji, które nie łączą się z internetem.']]]],
+['Sieć, API i asynchroniczność',[
+['HTTP i requests',['Jak działa HTTP: metody, kody statusu, nagłówki, JSON.','requests: get, post, params, timeout, raise_for_status.','Pobierz kursy walut z API NBP (api.nbp.pl) i wypisz tabelę.']],
+['API na poważnie',['Paginacja, limity zapytań, ponawianie z rosnącym opóźnieniem.','Klucze API w zmiennych środowiskowych i pliku .env (python-dotenv), nigdy w kodzie.','Klasa-klient API z cache na dysku, żeby nie pytać serwera dwa razy o to samo.']],
+['Projekt: klient API w terminalu',['Wybierz API (pogoda, waluty, gry) i zrób narzędzie CLI z kilkoma komendami.','Cache, obsługa błędów sieci, testy z udawanymi odpowiedziami (mock).','Wrzuć na GitHuba z README.']],
+['Web scraping',['HTML w pigułce; BeautifulSoup: find, select, atrybuty.','Etyka: robots.txt, regulamin strony, przerwy między zapytaniami.','Scraper zbierający dane z books.toscrape.com do pliku CSV.']],
+['asyncio',['async i await, pętla zdarzeń, asyncio.gather i asyncio.sleep.','httpx.AsyncClient: wiele zapytań naraz i semafor jako limit.','Zmierz czas: 20 zapytań po kolei kontra asynchronicznie.']],
+['Projekt: asynchroniczny monitor',['Monitoruj kilka źródeł danych co X sekund, asynchronicznie.','Reguły alertów (próg, zmiana procentowa) wczytywane z pliku konfiguracji.','Logi, obsługa błędów sieci i czyste zamykanie przez Ctrl+C.']]]],
+['Bazy danych',[
+['SQL od zera',['SQLite i moduł sqlite3: CREATE TABLE, INSERT, SELECT, WHERE, ORDER BY.','Zapytania z parametrami (?) i dlaczego nigdy nie sklejasz SQL z tekstu (SQL injection).','Baza ocen: dodawanie i wyszukiwanie z poziomu Pythona.']],
+['SQL dalej',['JOIN, GROUP BY, HAVING i funkcje agregujące.','Klucze obce, indeksy, transakcje (commit, rollback).','10 zapytań na bazie z dwiema tabelami (uczniowie i oceny).']],
+['Projekt: wydatki w SQLite',['Przenieś menedżer wydatków z JSON do SQLite.','Skrypt migrujący stare dane.','Raporty jako zapytania SQL zamiast pętli w Pythonie.']],
+['SQLAlchemy',['ORM: modele, sesja, zapytania w stylu SQLAlchemy 2.0.','Relacje jeden-do-wielu i wiele-do-wielu.','Przepisz system biblioteki na SQLAlchemy.']],
+['Projektowanie bazy i migracje',['Normalizacja w praktyce: kiedy rozbić tabelę na dwie.','Alembic: zmiany schematu bez utraty danych.','Dodaj nową kolumnę do istniejącej bazy przez migrację.']],
+['Projekt: baza dziennika nauki',['Schemat: przedmioty, sesje, cele.','Raporty SQL: minuty na tydzień, najdłuższa seria, porównanie miesięcy.','Eksport wyników do CSV.']]]],
+['Backend z FastAPI',[
+['Pierwsze API',['pip install fastapi uvicorn; pierwszy endpoint, uruchomienie i dokumentacja pod /docs.','Parametry ścieżki i zapytania, kody odpowiedzi.','API z listą zadań trzymaną w pamięci.']],
+['Pydantic i walidacja',['Modele Pydantic dla żądań i odpowiedzi; walidacja pól.','Obsługa błędów: HTTPException i własne komunikaty.','Walidacja w API zadań: tytuł niepusty, termin w przyszłości.']],
+['Projekt: CRUD z bazą',['Połącz FastAPI z SQLAlchemy: zależności i sesja na żądanie.','Pełny CRUD: create, read, update, delete.','Przetestuj wszystko ręcznie w /docs.']],
+['Logowanie i bezpieczeństwo',['Hasła tylko jako hash (np. biblioteka pwdlib z argon2).','Tokeny JWT: logowanie i chronione endpointy.','CORS, sekrety w .env, podstawy OWASP Top 10.']],
+['Testy i struktura API',['TestClient z FastAPI i pytest; osobna baza do testów.','Struktura większej aplikacji: routers, schemas, models, services.','Testy najważniejszych endpointów.']],
+['Projekt: API planera z frontendem',['API do zapisywania sesji nauki i statystyk.','Prosta strona HTML i JavaScript (fetch), która z niego korzysta.','README z instrukcją uruchomienia.']]]],
+['Dane i analiza',[
+['NumPy',['Tablice, kształty, indeksowanie, operacje wektorowe.','Broadcasting i funkcje agregujące.','Porównaj szybkość pętli i NumPy na milionie liczb.']],
+['pandas: podstawy',['DataFrame i Series; read_csv, head, info, describe.','Filtrowanie, sortowanie, nowe kolumny, groupby, merge.','Analiza Twojego dziennika nauki z wcześniejszych lekcji.']],
+['Projekt: wykresy z Twoich danych',['matplotlib: wykres liniowy, słupkowy, histogram; opisy osi i tytuły.','Wykresy prosto z pandas (df.plot).','Trzy wykresy z własnych danych zapisane do PNG.']],
+['Szeregi czasowe',['Daty w pandas: to_datetime, indeks czasowy, resample.','rolling: średnie kroczące i zmiany procentowe.','Pobierz historię kursu waluty z API NBP i policz średnie kroczące.']],
+['Czyszczenie danych i Jupyter',['Braki danych, duplikaty, złe typy, wartości odstające.','Jupyter Notebook w VS Code: komórki, markdown, wykresy w notatniku.','Wyczyść „brudny” zbiór danych z Kaggle albo dane.gov.pl.']],
+['Projekt: raport z danych',['Wybierz zbiór danych, który Cię ciekawi (sport, gry, pogoda).','Notatnik: pytania, czyszczenie, analiza, wykresy, wnioski.','Opublikuj na GitHubie.']]]],
+['Wydajność, algorytmy i automatyzacja',[
+['Wydajność',['Złożoność O(1), O(log n), O(n), O(n²) na przykładach.','timeit i cProfile: znajdź wolne miejsca w kodzie.','Przyspiesz wolny kod: zbiór zamiast listy przy wyszukiwaniu, słownik zamiast pętli.']],
+['Wątki i procesy',['threading, multiprocessing, concurrent.futures.','GIL: kiedy pomagają wątki (sieć, pliki), a kiedy potrzebne są procesy (obliczenia).','Pobieranie plików wątkami i liczenie liczb pierwszych procesami: zmierz zysk.']],
+['Projekt: algorytmy',['Rekurencja, wyszukiwanie binarne, sortowanie przez scalanie.','Grafy: BFS i DFS na siatce (wyjście z labiryntu).','5 łatwych zadań na LeetCode albo Codewars.']],
+['Automatyzacja',['Masowa zmiana nazw, porządkowanie plików, archiwa zip (shutil, zipfile).','Uruchamianie skryptu według harmonogramu (Harmonogram zadań Windows).','Skrypt sprzątający folder Pobrane według typów plików i dat.']],
+['Boty',['Bot Discord (discord.py) albo Telegram (python-telegram-bot): komendy i wiadomości.','Token w .env, obsługa błędów, logi.','Bot, który na komendę pokazuje Twoje statystyki nauki z bazy.']],
+['Projekt: bot połączony z API',['Bot korzysta z Twojego API z modułu FastAPI.','Przypomnienia o blokach nauki o ustalonej godzinie.','Testy logiki bota bez łączenia z serwerem.']]]],
+['Projekt końcowy',[
+['Plan projektu',['Wybierz projekt na 2 tygodnie, np. aplikacja webowa z API, bazą i botem.','Specyfikacja: funkcje, schemat bazy, endpointy, etapy.','Repozytorium, struktura folderów i pierwsze issues na GitHubie.']],
+['Rdzeń aplikacji',['Modele, logika i baza danych.','Testy logiki od pierwszego dnia.','Commit po każdej skończonej funkcji.']],
+['Projekt: interfejs i integracje',['API albo CLI i integracja z zewnętrznym serwisem.','Obsługa błędów i logi.','Poproś Claude o recenzję kodu i popraw uwagi.']],
+['Docker',['Czym jest kontener; Dockerfile dla aplikacji w Pythonie.','docker build, docker run, zmienne środowiskowe.','Uruchom swój projekt w kontenerze.']],
+['GitHub Actions',['Workflow: testy, ruff i mypy przy każdym pushu.','Odznaka statusu w README.','Napraw wszystko, co wyłapie CI.']],
+['Finał półrocza',['README z opisem, zrzutami ekranu i instrukcją.','Wdróż projekt na darmowy hosting albo nagraj krótkie demo.','Podsumuj 26 tygodni: co umiesz i w którą stronę dalej (backend, dane, automatyzacja).']]]]
+];
+const PY=[];PY_MODS.forEach((m,mi)=>m[1].forEach(l=>PY.push({n:PY.length+1,m:mi,t:l[0],z:l[1]})));
+const PYN=PY.length;
+const TOG=[['lite','Lżejszy dzień','Lżejszy dzień: tylko szkoła, francuski i angielski w skróconej wersji.'],['exam','Jutro sprawdzian','Jutro sprawdzian: umiejętności dnia zamieniają się w naukę na sprawdzian.'],['free','Dzień wolny od szkoły','Dzień wolny: plan jak w sobotę (ferie, święta, dni wolne).']];
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const RX_D=/^\d{4}-\d{2}-\d{2}$/, RX_T=/^\d{2}:\d{2}$/, RX_ID=/^[a-z0-9]{1,6}$/;
+const todayKey=()=>{const n=new Date();return n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());};
+const dU=k=>{const p=k.split('-').map(Number);return Date.UTC(p[0],p[1]-1,p[2]);};
+const kU=t=>{const d=new Date(t);return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate());};
+const add=(k,n)=>kU(dU(k)+n*864e5);
+const wday=k=>new Date(dU(k)).getUTCDay();
+const monday=k=>add(k,-((wday(k)+6)%7));
+const diff=(a,b)=>Math.round((dU(b)-dU(a))/864e5);
+const toMin=s=>{const p=s.split(':').map(Number);return p[0]*60+p[1];};
+const hm=m=>pad(Math.floor(m/60)%24)+':'+pad(Math.round(m)%60);
+const nowMin=()=>{const n=new Date();return n.getHours()*60+n.getMinutes()+n.getSeconds()/60;};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const longDate=k=>{const d=new Date(dU(k));return cap(DN[d.getUTCDay()])+', '+d.getUTCDate()+' '+MG[d.getUTCMonth()];};
+const shortDate=k=>{const d=new Date(dU(k));return d.getUTCDate()+' '+MS[d.getUTCMonth()];};
+const dayShort=k=>DS[wday(k)].toLowerCase()+' '+shortDate(k);
+const fmtDur=m=>{m=Math.round(m);if(m<60)return m+' min';const h=Math.floor(m/60),r=m%60;return h+' h'+(r?' '+r+' min':'');};
+const fmtClock=ms=>{const s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+pad(m):m)+':'+pad(x);};
+const days=n=>n===1?'dzień':'dni';
+const lekcji=n=>n===1?'lekcja':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?'lekcje':'lekcji';
+const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+const blank=()=>({v:2,updatedAt:0,settings:{ready:Object.assign({},DEF_READY),start:DEF_START,sound:true},days:{},ms:{},py:{},notes:{},timer:null});
+function normalize(x){
+  const s=blank();
+  if(!x||typeof x!=='object')return s;
+  if(typeof x.updatedAt==='number')s.updatedAt=x.updatedAt;
+  const st=x.settings||{};
+  if(st.ready&&typeof st.ready==='object')for(const k in DEF_READY){const v=st.ready[k];if(typeof v==='string'&&RX_T.test(v))s.settings.ready[k]=v;}
+  if(typeof st.start==='string'&&RX_D.test(st.start))s.settings.start=st.start;
+  if(st.sound===false)s.settings.sound=false;
+  if(x.days&&typeof x.days==='object')for(const k in x.days){
+    if(!RX_D.test(k))continue;
+    const d=x.days[k]||{},o={done:{}};
+    if(d.done&&typeof d.done==='object')for(const b in d.done){if(RX_ID.test(b)&&d.done[b])o.done[b]=1;}
+    TOG.forEach(t=>{if(d[t[0]])o[t[0]]=1;});
+    s.days[k]=o;
+  }
+  if(x.ms&&typeof x.ms==='object')for(const k in x.ms){if(/^(school|fr|d3|web)-\d{1,2}$/.test(k)&&x.ms[k])s.ms[k]=1;}
+  if(x.py&&typeof x.py==='object')for(const k in x.py){const n=Number(k);if(Number.isInteger(n)&&n>=1&&n<=PYN&&typeof x.py[k]==='string'&&RX_D.test(x.py[k]))s.py[n]=x.py[k];}
+  if(x.notes&&typeof x.notes==='object')for(const k in x.notes){
+    if(!RX_D.test(k)||!x.notes[k]||typeof x.notes[k]!=='object')continue;
+    const o={};for(const b in x.notes[k]){const v=x.notes[k][b];if(RX_ID.test(b)&&typeof v==='string'&&v.trim())o[b]=v.slice(0,400);}
+    if(Object.keys(o).length)s.notes[k]=o;
+  }
+  const t=x.timer;
+  if(t&&typeof t==='object'&&typeof t.d==='string'&&RX_D.test(t.d)&&typeof t.id==='string'&&RX_ID.test(t.id)&&typeof t.end==='number')s.timer={d:t.d,id:t.id,end:t.end};
+  return s;
+}
+let S=blank();
+try{const r=localStorage.getItem(LS);if(r)S=normalize(JSON.parse(r));}catch(e){}
+
+const weekNo=k=>Math.floor(diff(monday(S.settings.start),k)/7)+1;
+const sprint=k=>Math.min(13,Math.max(1,Math.ceil(weekNo(k)/2)));
+const monthIdx=sp=>Math.min(5,Math.floor((sp-1)/2));
+const NORM=(()=>{const g={},a={};for(const d in TPL)TPL[d].forEach(b=>{if(b.gap)return;const gr=AREAS[b.a][1];g[gr]=(g[gr]||0)+b.m;a[b.a]=(a[b.a]||0)+b.m;});return {g,a};})();
+
+function dayOpt(k){return S.days[k]||{done:{}};}
+function planFor(k){
+  const o=dayOpt(k),wd=wday(k),td=o.free?6:wd;
+  let items=TPL[td];
+  if(o.lite){const l=[];items.forEach(b=>{if(b.core){if(l.length)l.push({gap:10});l.push(Object.assign({},b,{m:b.lite||b.m}));}});items=l;}
+  let t=toMin(S.settings.ready[td]||DEF_READY[td]);
+  return items.map(b=>{
+    if(b.gap){const g={gap:b.gap,label:b.label,s:t,e:t+b.gap};t+=b.gap;return g;}
+    const a=(o.exam&&SKILL.has(b.a))?'exam':b.a;
+    const x={id:b.id,a,m:b.m,s:t,e:t+b.m};t+=b.m;return x;
+  });
+}
+const blocks=k=>planFor(k).filter(b=>!b.gap);
+function dayStat(k){const dn=dayOpt(k).done||{};let t=0,d=0;blocks(k).forEach(b=>{t+=b.m;if(dn[b.id])d+=b.m;});return {t,d,r:t?d/t:0};}
+
+/* Python: kolejka lekcji */
+const pySlots=()=>{const g0=monday(S.settings.start),out=[];for(let i=0;i<182&&out.length<PYN;i++){const k=add(g0,i);if(TPL[wday(k)].some(b=>b.a==='py'))out.push(k);}return out;};
+const nextLesson=()=>{for(let n=1;n<=PYN;n++)if(!S.py[n])return n;return 0;};
+const lessonsOn=k=>Object.keys(S.py).filter(n=>S.py[n]===k).map(Number).sort((a,b)=>a-b);
+const hasPy=k=>blocks(k).some(b=>b.a==='py');
+function lessonFor(k){
+  const tk=todayKey(),on=lessonsOn(k);
+  if(on.length)return {n:on[on.length-1],done:true};
+  const nx=nextLesson();
+  if(!nx)return {n:0};
+  if(k<tk)return {n:nx,missed:true};
+  let c=0;
+  for(let x=tk;x<k;x=add(x,1)){if(hasPy(x)&&!(x===tk&&lessonsOn(tk).length))c++;}
+  const n=nx+c;
+  return n>PYN?{n:0}:{n};
+}
+function pyStatus(){
+  const tk=todayKey(),sl=pySlots(),exp=sl.filter(d=>d<tk).length,done=Object.keys(S.py).length;
+  return {exp,done,d:done-exp,sl};
+}
+const pyPrompt=l=>'Uczę się Pythona według planu. Dzisiejsza lekcja '+l.n+': „'+l.t+'”. Zadania: '+l.z.join(' ')+' Wytłumacz mi krótko teorię na prostych przykładach, a potem prowadź mnie przez zadania. Nie podawaj gotowych rozwiązań, dopóki nie poproszę; dawaj wskazówki.';
+
+function taskFor(b,k){
+  const sp=sprint(k);
+  if(b.a==='py'){const l=lessonFor(k);return l.n?'Lekcja '+l.n+': '+PY[l.n-1].t:'Wszystkie 78 lekcji zrobione. Pracuj nad własnym projektem.';}
+  if(ROAD[b.a])return ROAD[b.a][sp-1];
+  if(b.a==='exam')return 'Materiał na jutrzejszy sprawdzian albo kartkówkę.';
+  if(b.a==='mat'||b.a==='fiz')return 'Cel miesiąca: '+SCHOOL[monthIdx(sp)]+'.';
+  if(b.a==='week')return 'Podsumuj tydzień i ustal jeden cel na następny.';
+  if(b.a==='plan')return 'Odhacz bloki i zerknij na jutro.';
+  return '';
+}
+const noteOf=(k,id)=>((S.notes[k]||{})[id])||'';
+function streak(){
+  let k=todayKey(),n=0;
+  if(dayStat(k).r<.7)k=add(k,-1);
+  for(let i=0;i<400;i++){if(dayStat(k).r>=.7){n++;k=add(k,-1);}else break;}
+  return n;
+}
+function bestStreak(){
+  const ks=Object.keys(S.days).sort();if(!ks.length)return 0;
+  let k=ks[0],tk=todayKey(),best=0,cur=0;
+  for(let i=0;i<800&&k<=tk;i++){if(dayStat(k).r>=.7){cur++;if(cur>best)best=cur;}else cur=0;k=add(k,1);}
+  return best;
+}
+function weekGroups(m){
+  const g={};GROUPS.forEach(x=>{g[x[0]]={p:0,d:0};});
+  for(let i=0;i<7;i++){const k=add(m,i),dn=dayOpt(k).done||{};blocks(k).forEach(b=>{const gr=AREAS[b.a][1];if(!g[gr])return;g[gr].p+=b.m;if(dn[b.id])g[gr].d+=b.m;});}
+  return g;
+}
+
+/* zapis i synchronizacja */
+let db=null,ref=null,syncState=IS_PWA?'pwa':'local',writing=false,dirty=false,pushT=null,noteT=null,pendingDay=false;
+const SYNC={local:'Zapis w tej przeglądarce. Otwórz aplikację, będąc zalogowanym w Claude, a postępy zsynchronizują się między telefonem i komputerem.',wait:'Łączę z Twoim kontem Claude…',ok:'Zapisane na Twoim koncie Claude. Telefon i komputer widzą te same postępy.',slow:'Konto Claude chwilowo nie odpowiada. Na razie zapisuję na tym urządzeniu.',err:'Nie udało się zapisać na koncie Claude. Dane są bezpieczne na tym urządzeniu.',pwa:'Dane zapisują się na tym urządzeniu. Raz na jakiś czas zrób kopię zapasową w Ustawieniach.'};
+function setSync(s){syncState=s;$('#bSync').textContent=SYNC[s];const e=$('#sSync');if(e)e.textContent=SYNC[s];}
+function prune(){let str=JSON.stringify(S);if(str.length<200000)return;const ks=Object.keys(S.notes).sort();while(str.length>=200000&&ks.length){delete S.notes[ks.shift()];str=JSON.stringify(S);}}
+function persistLocal(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
+function save(){S.updatedAt=Date.now();prune();persistLocal();if(ref){clearTimeout(pushT);pushT=setTimeout(push,1200);}}
+async function push(){
+  if(!ref)return;
+  if(writing){dirty=true;return;}
+  writing=true;
+  try{await ref.set(JSON.parse(JSON.stringify(S)));setSync('ok');}
+  catch(e){if(e&&e.code==='unavailable'){setTimeout(push,1500+Math.random()*2000);}else setSync('err');}
+  writing=false;
+  if(dirty){dirty=false;push();}
+}
+async function initSync(){
+  if(IS_PWA)return;
+  try{
+    const c=window.claude;
+    if(!c||typeof c.use!=='function'){setSync('local');return;}
+    const d=await c.use('db'),u=await c.use('user');
+    if(!d||!u){setSync('local');return;}
+    const id=await u.id();
+    if(!id){setSync('local');return;}
+    db=d;ref=db.doc('data/users/'+id+'/planner');
+    setSync('wait');
+    const to=setTimeout(()=>{if(syncState==='wait')setSync('slow');},10000);
+    ref.onSnapshot(snap=>{
+      const cached=snap.metadata&&snap.metadata.fromCache;
+      if(!cached)clearTimeout(to);
+      if(snap.exists){
+        const r=snap.data()||{};
+        const ru=typeof r.updatedAt==='number'?r.updatedAt:0;
+        if(ru>(S.updatedAt||0)){S=normalize(r);persistLocal();renderBoard();safeRenderView();}
+        else if((S.updatedAt||0)>ru&&!cached){clearTimeout(pushT);pushT=setTimeout(push,400);}
+      }else if(!cached&&S.updatedAt){clearTimeout(pushT);pushT=setTimeout(push,400);}
+      if(!cached&&syncState!=='err')setSync('ok');
+    },()=>{clearTimeout(to);setSync('err');});
+  }catch(e){setSync('local');}
+}
+
+/* dźwięk timera */
+let actx=null,rang=0;
+function unlockAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!actx)actx=new C();if(actx.state==='suspended')actx.resume();}catch(e){}}
+function beep(){
+  if(!S.settings.sound)return;
+  try{if(actx){const t0=actx.currentTime;[0,.35,.7].forEach(dt=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=880;g.gain.setValueAtTime(0.0001,t0+dt);g.gain.exponentialRampToValueAtTime(0.3,t0+dt+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+dt+0.28);o.connect(g);g.connect(actx.destination);o.start(t0+dt);o.stop(t0+dt+0.3);});}}catch(e){}
+  try{if(navigator.vibrate)navigator.vibrate([300,150,300]);}catch(e){}
+}
+
+let view='dzis',viewDate=todayKey(),weekOff=0,lastToday=todayKey(),openLesson=0;
+const VIEWS=['dzis','tydzien','python','mapa','ustawienia'];
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800);}
+const typing=()=>{const a=document.activeElement;return !!(a&&a.tagName==='TEXTAREA'&&a.classList.contains('nt'));};
+
+function renderBoard(){
+  const tk=todayKey(),st=dayStat(tk),p=blocks(tk),nm=nowMin(),dn=dayOpt(tk).done||{};
+  $('#bDate').textContent=longDate(tk);
+  const w=weekNo(tk);
+  $('#bMeta').textContent=w<1?'Rozgrzewka. Plan startuje '+shortDate(S.settings.start)+', ale możesz działać już dziś.':w<=26?'Tydzień '+w+' z 26, sprint '+sprint(tk)+' z 13.':'Pół roku za Tobą. Czas ułożyć nowy plan.';
+  const line=b=>{const t=taskFor(b,tk);return t||noteOf(tk,b.id)||'Ty decydujesz, czym się zajmiesz. Plan wpisz w notatce bloku.';};
+  const card=(lbl,b,count,btns)=>'<p class="lbl">'+lbl+'</p><h2>'+esc(AREAS[b.a][0])+'</h2><p class="task">'+esc(line(b))+'</p><div class="nowrow">'+count+btns+'</div>';
+  const tm=S.timer&&S.timer.d===tk?p.find(b=>b.id===S.timer.id):null;
+  const cur=p.find(b=>nm>=b.s&&nm<b.e&&!dn[b.id]);
+  const next=p.find(b=>b.s>nm&&!dn[b.id]);
+  let h='';
+  if(tm){
+    const left=S.timer.end-Date.now();
+    h=card(left>0?'Trwa blok z timerem, '+tm.m+' min':'Czas minął, odhacz blok',tm,'<span class="count" id="cnt">'+(left>0?fmtClock(left):'Koniec')+'</span>','<button class="btn o" data-act="stop">Stop</button><button class="btn y" data-act="done" data-id="'+esc(tm.id)+'">Zrobione</button>');
+    document.title=(left>0?fmtClock(left):'Koniec')+' '+AREAS[tm.a][0];
+  }else{
+    document.title='Plan obowiązków';
+    if(cur){
+      h=card('Teraz, '+hm(cur.s)+'–'+hm(cur.e),cur,'<span class="count">zostało '+fmtDur(Math.max(1,cur.e-nm))+'</span>','<button class="btn o" data-act="start" data-id="'+esc(cur.id)+'">Start timer</button><button class="btn y" data-act="done" data-id="'+esc(cur.id)+'">Zrobione</button>');
+    }else if(next){
+      h=card('Następne o '+hm(next.s),next,'<span class="count">za '+fmtDur(Math.max(1,next.s-nm))+'</span>','<button class="btn y" data-act="start" data-id="'+esc(next.id)+'">Zacznij teraz</button>');
+    }else{
+      const tb=blocks(add(tk,1))[0];
+      h='<p class="lbl">Plan na dziś zamknięty</p><h2>'+(st.r>=.7?'Dobra robota':'Jutro nowy dzień')+'</h2><p class="task">Zrobione '+st.d+' z '+st.t+' min. Jutro zaczynasz o '+(tb?hm(tb.s)+' od bloku '+esc(AREAS[tb.a][0]).toLowerCase():'—')+'.</p>';
+    }
+  }
+  const missed=p.filter(b=>b.e<=nm&&!dn[b.id]&&b!==tm);
+  if(missed.length)h+='<p class="missline">Pominięte dziś: '+missed.map(b=>esc(AREAS[b.a][0]).toLowerCase()).join(', ')+'. Zrób później i odhacz albo odpuść bez wyrzutów.</p>';
+  $('#bNow').innerHTML=h;
+  $('#bDone').textContent=st.d;
+  $('#bOf').textContent='z '+st.t+' min dziś';
+  $('#bBar').style.width=Math.round(st.r*100)+'%';
+  const m=monday(tk);let r='';
+  for(let i=0;i<7;i++){const k=add(m,i),s=k>tk?null:dayStat(k);r+='<button class="rc'+(k===tk?' td':'')+'" data-go="'+k+'" aria-label="'+esc(longDate(k))+(s?', '+Math.round(s.r*100)+'%':'')+'"><span class="cell"><i style="height:'+(s?Math.round(s.r*100):0)+'%"></i></span>'+DS[wday(k)]+'</button>';}
+  $('#bRib').innerHTML=r;
+  const sk=streak();
+  $('#bStreak').innerHTML=sk?'Seria: <b>'+sk+'</b> '+days(sk)+' z planem zrobionym w co najmniej 70%.':'Zrób dziś 70% planu, a zaczniesz serię.';
+}
+
+function barsHTML(g){
+  let tp=0,td=0;
+  const rows=GROUPS.map(x=>{const v=g[x[0]];tp+=v.p;td+=v.d;const pc=v.p?Math.round(v.d/v.p*100):0;return '<div class="arow k-'+x[0]+'"><span>'+x[1]+'</span><span class="abar"><i style="width:'+pc+'%"></i></span><span class="anum">'+v.d+' / '+v.p+' min</span></div>';}).join('');
+  return rows+'<p class="tot">Razem '+fmtDur(td)+' z '+fmtDur(tp)+'</p>';
+}
+
+function renderDay(){
+  pendingDay=false;
+  const k=viewDate,tk=todayKey(),o=dayOpt(k),dn=o.done||{},st=dayStat(k),nm=nowMin();
+  const open=new Set([...document.querySelectorAll('#dList details[open]')].map(d=>d.dataset.id));
+  $('#dTitle').textContent=k===tk?'Dziś':k===add(tk,1)?'Jutro':k===add(tk,-1)?'Wczoraj':longDate(k);
+  $('#dSub').textContent=(k===tk||k===add(tk,1)||k===add(tk,-1)?longDate(k)+'. ':'')+'Zrobione '+st.d+' z '+st.t+' min ('+Math.round(st.r*100)+'%).';
+  $('#dTog').innerHTML=TOG.map(t=>'<button class="tg" data-tog="'+t[0]+'" aria-pressed="'+(o[t[0]]?'true':'false')+'">'+t[1]+'</button>').join('');
+  $('#dHint').textContent=TOG.filter(t=>o[t[0]]).map(t=>t[2]).join(' ');
+  $('#dHint').hidden=!TOG.some(t=>o[t[0]]);
+  $('#dList').innerHTML=planFor(k).map(b=>{
+    if(b.gap)return '<li class="gap">'+(b.label?esc(b.label)+', '+fmtDur(b.gap)+', do '+hm(b.e):'Przerwa '+fmtDur(b.gap))+'</li>';
+    const done=!!dn[b.id],isNow=k===tk&&nm>=b.s&&nm<b.e,gr=AREAS[b.a][1],name=AREAS[b.a][0];
+    const miss=!done&&(k<tk||(k===tk&&b.e<=nm));
+    const note=noteOf(k,b.id),own=OWN[b.a];
+    const ta=(ph)=>'<textarea class="nt" data-note="'+b.id+'" rows="2" maxlength="400" placeholder="'+esc(ph)+'">'+esc(note)+'</textarea>';
+    let body='',det='';
+    if(b.a==='py'){
+      const l=lessonFor(k);
+      if(l.n){
+        const L=PY[l.n-1];
+        body='<p class="task"><b>Lekcja '+l.n+' z '+PYN+':</b> '+esc(L.t)+'</p>'+(l.missed?'<p class="behind">Tego dnia lekcja nie została zrobiona. Następna w kolejce to lekcja '+l.n+'.</p>':'');
+        det='<details data-id="'+b.id+'"'+(open.has(b.id)?' open':'')+'><summary>Zadania na ten blok</summary><ol class="zad">'+L.z.map(z=>'<li>'+esc(z)+'</li>').join('')+'</ol>'+ta('Twoja notatka do lekcji')+'</details><a class="sbtn" href="#python" data-lesson="'+l.n+'">Otwórz lekcję</a>';
+      }else{body='<p class="task">'+esc(taskFor(b,k))+'</p>';det='<details data-id="'+b.id+'"'+(open.has(b.id)?' open':'')+'><summary>Notatka</summary>'+ta('Twoja notatka')+'</details>';}
+    }else if(own){
+      const t=taskFor(b,k);
+      body=(t&&b.a!=='plan'?'<p class="task">'+esc(t)+'</p>':'')+ta(own);
+      if(HOW[b.a])det='<details data-id="'+b.id+'"'+(open.has(b.id)?' open':'')+'><summary>Jak zrobić ten blok</summary><p class="how">'+esc(HOW[b.a])+'</p></details>';
+    }else{
+      const how=HOW[b.a]||HOW[gr]||'';
+      body='<p class="task">'+esc(taskFor(b,k))+'</p>';
+      det='<details data-id="'+b.id+'"'+(open.has(b.id)?' open':'')+'><summary>Jak zrobić ten blok</summary>'+(how?'<p class="how">'+esc(how)+'</p>':'')+ta('Twoja notatka do tego bloku')+'</details>';
+    }
+    return '<li class="blk k-'+gr+(done?' done':'')+(isNow?' now':'')+(miss?' miss':'')+'">'+
+      '<div class="tm"><b>'+hm(b.s)+'</b><span>do '+hm(b.e)+'</span></div>'+
+      '<div><h3>'+esc(name)+'<span class="dur">'+b.m+' min</span>'+(isNow?'<span class="tag">teraz</span>':'')+(miss?'<span class="tag m">pominięte</span>':'')+'</h3>'+body+
+      '<div class="acts">'+det+(k===tk&&!done?'<button class="sbtn" data-start="'+b.id+'">Start timer</button>':'')+'</div></div>'+
+      '<button class="chk" data-done="'+b.id+'" aria-pressed="'+done+'" aria-label="'+(done?'Cofnij: ':'Zrobione: ')+esc(name)+'">'+CHECK+'</button></li>';
+  }).join('');
+  $('#aBars').innerHTML=barsHTML(weekGroups(monday(k)));
+}
+
+function renderWeek(){
+  const tk=todayKey(),m=add(monday(viewDate),weekOff*7),w=weekNo(m);
+  $('#wTitle').textContent=w<1?'Przed startem planu':w<=26?'Tydzień '+w+' z 26':'Po półroczu';
+  const g=weekGroups(m);let tp=0,td=0;GROUPS.forEach(x=>{tp+=g[x[0]].p;td+=g[x[0]].d;});
+  $('#wSub').textContent=shortDate(m)+' – '+shortDate(add(m,6))+'. Zrobione '+fmtDur(td)+' z '+fmtDur(tp)+'.';
+  let r='';
+  for(let i=0;i<7;i++){
+    const k=add(m,i),o=dayOpt(k),dn=o.done||{},st=dayStat(k),fut=k>tk;
+    const segs=blocks(k).map(b=>'<i class="k-'+AREAS[b.a][1]+(dn[b.id]?' on':'')+'" style="flex:'+b.m+'"></i>').join('');
+    r+='<button class="wrow'+(k===tk?' td':'')+'" data-go="'+k+'"><span class="wd">'+cap(DN[wday(k)])+'<small>'+shortDate(k)+(o.lite?', lżejszy':'')+(o.free?', wolny':'')+(o.exam?', sprawdzian':'')+'</small></span><span class="segs">'+segs+'</span><span class="pct">'+(fut&&!st.d?'–':Math.round(st.r*100)+'%')+'</span></button>';
+  }
+  $('#wRows').innerHTML=r;
+  $('#wBars').innerHTML=barsHTML(g);
+}
+
+function renderPython(){
+  const tk=todayKey(),ps=pyStatus(),nx=nextLesson(),sl=ps.sl;
+  const stat=weekNo(tk)<1?'Start '+shortDate(sl[0]||S.settings.start):ps.d>=0?(ps.d>0?ps.d+' '+lekcji(ps.d)+' do przodu':'Na bieżąco'):(-ps.d)+' '+lekcji(-ps.d)+' w tyle';
+  $('#pyFigs').innerHTML='<div><b>'+ps.done+' z '+PYN+'</b><span>lekcji zrobionych</span></div><div><b>'+esc(stat)+'</b><span>względem planu</span></div><div><b>'+(nx?'Moduł '+(PY[nx-1].m+1):'Koniec')+'</b><span>'+(nx?esc(PY_MODS[PY[nx-1].m][0]):'wszystkie moduły zrobione')+'</span></div>';
+  let r='';
+  PY_MODS.forEach((m,mi)=>{
+    r+='<div class="pyc">';
+    for(let j=0;j<6;j++){const n=mi*6+j+1,d=S.py[n],late=!d&&sl[n-1]&&sl[n-1]<tk;r+='<button class="'+(d?'d':late?'late':'')+(n===nx?' cur':'')+'" data-open="'+n+'" title="Lekcja '+n+'" aria-label="Lekcja '+n+(d?', zrobiona':'')+'"></button>';}
+    r+='<span>'+(mi+1)+'</span></div>';
+  });
+  $('#pyRib').innerHTML=r;
+  if(nx){
+    const L=PY[nx-1];
+    $('#pyCur').innerHTML='<div class="lesson k-py"><p class="lbl">Następna lekcja: '+nx+' z '+PYN+', moduł '+(L.m+1)+': '+esc(PY_MODS[L.m][0])+'</p><h3>'+esc(L.t)+'</h3><p class="note">W planie: '+(sl[nx-1]?esc(longDate(sl[nx-1])):'po półroczu')+'. '+(nx%3===0?'Niedziela, 60 min: projekt.':'Blok 75 min: teoria i ćwiczenia.')+'</p><ol>'+L.z.map(z=>'<li>'+esc(z)+'</li>').join('')+'</ol><div class="lrow"><button class="b2" data-pydone="'+nx+'">Lekcja zrobiona</button><button class="b3" data-prompt="'+nx+'">Kopiuj prompt dla Claude</button></div><p class="prompt" id="pyPrompt" hidden></p></div>';
+  }else $('#pyCur').innerHTML='<div class="lesson k-py"><h3>Wszystkie lekcje zrobione</h3><p>78 z 78. Teraz własne projekty i specjalizacja: backend, dane albo automatyzacja.</p></div>';
+  const openMods=new Set([...document.querySelectorAll('#pyMods details.mod[open]')].map(d=>d.dataset.m));
+  const curMod=nx?PY[nx-1].m:-1;
+  $('#pyMods').innerHTML=PY_MODS.map((m,mi)=>{
+    const ls=PY.filter(l=>l.m===mi),dc=ls.filter(l=>S.py[l.n]).length;
+    const isOpen=openMods.size?openMods.has(String(mi)):mi===curMod;
+    const op=isOpen||(openLesson&&PY[openLesson-1].m===mi);
+    return '<details class="mod" data-m="'+mi+'"'+(op?' open':'')+'><summary>Moduł '+(mi+1)+': '+esc(m[0])+'<small>'+dc+' z 6</small></summary>'+ls.map(l=>{
+      const d=S.py[l.n],pl=sl[l.n-1],late=!d&&pl&&pl<tk;
+      return '<div class="ls'+(l.n===nx?' cur':'')+'" id="ls'+l.n+'"><input type="checkbox" data-pyl="'+l.n+'" aria-label="Lekcja '+l.n+' zrobiona"'+(d?' checked':'')+'><div><small class="'+(late?'late':'')+'">Lekcja '+l.n+', '+(pl?esc(dayShort(pl)):'po półroczu')+(d?', zrobiona '+esc(shortDate(d)):late?', zaległa':'')+'</small><b>'+esc(l.t)+'</b><details'+(openLesson===l.n?' open':'')+'><summary>Zadania</summary><ol class="zad">'+l.z.map(z=>'<li>'+esc(z)+'</li>').join('')+'</ol></details></div></div>';
+    }).join('')+'</details>';
+  }).join('');
+  if(openLesson){const el=document.getElementById('ls'+openLesson);openLesson=0;if(el)setTimeout(()=>el.scrollIntoView({block:'center'}),30);}
+}
+
+function renderMap(){
+  const tk=todayKey(),g0=monday(S.settings.start),sp=sprint(tk);
+  let h='<span></span>',last=-1;
+  for(let w=0;w<26;w++){const mo=new Date(dU(add(g0,w*7+3))).getUTCMonth();h+='<span class="ml">'+(mo!==last?MS[mo]:'')+'</span>';last=mo;}
+  let doneAll=0,planAll=0,good=0;
+  const own={en:{p:0,d:0},tr:{p:0,d:0},bio:{p:0,d:0}};
+  const lab=['Pn','','Śr','','Pt','','Nd'];
+  for(let d=0;d<7;d++){
+    h+='<span class="hl">'+lab[d]+'</span>';
+    for(let w=0;w<26;w++){
+      const k=add(g0,w*7+d),st=dayStat(k);planAll+=st.t;
+      let c='hc';
+      if(k>tk)c+=' fut';else{
+        doneAll+=st.d;if(st.r>=.7)good++;c+=st.r>=.9?' h3':st.r>=.5?' h2':st.r>0?' h1':'';
+        const dn=dayOpt(k).done||{};blocks(k).forEach(b=>{if(own[b.a]){own[b.a].p+=b.m;if(dn[b.id])own[b.a].d+=b.m;}});
+      }
+      if(k===tk)c+=' td';
+      h+='<span class="'+c+'" title="'+shortDate(k)+(k>tk?'':', '+Math.round(st.r*100)+'%')+'"></span>';
+    }
+  }
+  $('#mHeat').innerHTML='<div class="heat">'+h+'</div>';
+  $('#mSub').textContent='Od '+shortDate(g0)+' do '+shortDate(add(g0,181))+'. Każdy kwadrat to jeden dzień; im ciemniejszy, tym więcej planu zrobione.';
+  const msDone=Object.keys(S.ms).length,bs=bestStreak();
+  $('#mFigs').innerHTML='<div><b>'+fmtDur(doneAll)+'</b><span>nauki z '+Math.round(planAll/60)+' h w planie</span></div><div><b>'+good+'</b><span>'+days(good)+' z planem w 70%+</span></div><div><b>'+bs+'</b><span>najdłuższa seria</span></div><div><b id="msCount">'+msDone+' z 45</b><span>celów odhaczonych</span></div>';
+  const ps=pyStatus(),nx=nextLesson();
+  const pyCard='<div class="panel goal k-py"><div><h3>Python</h3><p class="hrs">około '+Math.round(NORM.g.py*26/60)+' h przez 26 tygodni, '+fmtDur(NORM.g.py)+' tygodniowo</p><p class="gtxt">78 lekcji od podstaw do FastAPI, baz danych, asyncio i Dockera. Każdy blok ma swoją lekcję z zadaniami.</p></div><div><div class="arow k-py"><span>Lekcje</span><span class="abar"><i style="width:'+Math.round(ps.done/PYN*100)+'%"></i></span><span class="anum">'+ps.done+' / '+PYN+'</span></div><p style="margin:10px 0 14px">'+(nx?'Następna: <b>'+nx+'. '+esc(PY[nx-1].t)+'</b>':'Wszystkie lekcje zrobione.')+'</p><a class="b2" href="#python">Otwórz plan Pythona</a></div></div>';
+  const cards=[['school','Matematyka i fizyka'],['fr','Francuski'],['d3','Projektowanie 3D'],['web','Strony WWW']].map(x=>{
+    const gk=x[0],isS=gk==='school',items=isS?SCHOOL:ROAD[gk],ci=isS?monthIdx(sp):sp-1;
+    const hrs=isS?(NORM.a.mat+NORM.a.fiz):NORM.g[gk];
+    const rng=i=>{if(isS){const a=add(g0,i*28),b=i===5?add(g0,181):add(a,27);return shortDate(a)+' – '+shortDate(b);}const a=add(g0,i*14);return shortDate(a)+' – '+shortDate(add(a,13));};
+    const it=i=>{const key=gk+'-'+(i+1);return '<label class="ms'+(i===ci?' cur':'')+'"><input type="checkbox" data-ms="'+key+'"'+(S.ms[key]?' checked':'')+'><span><small>'+(isS?'Miesiąc ':'Sprint ')+(i+1)+', '+rng(i)+(i===ci?', teraz':'')+'</small>'+esc(items[i])+'</span></label>';};
+    let rest='';items.forEach((_,i)=>{if(i!==ci)rest+=it(i);});
+    return '<div class="panel goal k-'+gk+'"><div><h3>'+x[1]+'</h3><p class="hrs">około '+Math.round(hrs*26/60)+' h przez 26 tygodni, '+fmtDur(hrs)+' tygodniowo</p><p class="gtxt">'+esc(GOAL[gk])+'</p></div><div>'+it(ci)+'<details><summary>Pozostałe '+(isS?'miesiące':'sprinty')+'</summary>'+rest+'</details></div></div>';
+  });
+  const ownCard='<div class="panel goal k-plan"><div><h3>Angielski, trading, biologia</h3><p class="gtxt">Tu nic Ci nie narzucam. W tych blokach sam wpisujesz, czym się zajmujesz, a aplikacja liczy czas.</p></div><div>'+[['en','Angielski'],['tr','Trading'],['bio','Biologia']].map(x=>{const v=own[x[0]];const pc=v.p?Math.round(v.d/v.p*100):0;return '<div class="ownrow k-'+(x[0]==='bio'?'school':x[0])+'"><span>'+x[1]+'</span><span class="abar"><i style="width:'+pc+'%"></i></span><span class="anum">'+fmtDur(v.d)+' z '+fmtDur(v.p)+'</span></div>';}).join('')+'<p class="note" style="margin-top:8px">Liczone od startu planu do dziś.</p></div></div>';
+  $('#mGoals').innerHTML=pyCard+cards.join('')+ownCard;
+}
+
+let deferredInstall=null;
+function renderInstall(){
+  const el=$('#sInstall');if(!el)return;
+  const standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  let h;
+  if(!IS_PWA)h='<p class="note">Ten link działa w przeglądarce telefonu i synchronizuje postępy przez konto Claude. Wersję z własną ikoną, która uruchamia się jak zwykła aplikacja, dostajesz od Claude jako paczkę ZIP: wgrywasz ją na GitHub Pages i instalujesz z przeglądarki telefonu. Dane przeniesiesz przyciskiem „Kopiuj dane” niżej.</p>';
+  else if(standalone)h='<p class="note">Aplikacja jest zainstalowana i działa też bez internetu.</p>';
+  else if(deferredInstall)h='<p class="note">Zainstaluj aplikację, a dostaniesz ikonę na ekranie głównym.</p><div class="row"><button class="b2" id="sInst">Zainstaluj aplikację</button></div>';
+  else if(ios)h='<p class="note">W Safari stuknij „Udostępnij”, potem „Do ekranu początkowego”. Ikona pojawi się na ekranie głównym.</p>';
+  else h='<p class="note">W menu przeglądarki wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”.</p>';
+  el.innerHTML=h;
+}
+function renderSettings(){
+  const order=[1,2,3,4,5,6,0];
+  if(!$('#sTimes').children.length)$('#sTimes').innerHTML=order.map(d=>'<label class="f">'+cap(DN[d])+'<input type="time" id="t'+d+'" data-day="'+d+'"></label>').join('');
+  order.forEach(d=>{const e=$('#t'+d);if(e&&document.activeElement!==e)e.value=S.settings.ready[d];});
+  if(document.activeElement!==$('#sStart'))$('#sStart').value=S.settings.start;
+  $('#sSound').checked=!!S.settings.sound;
+  $('#sSync').textContent=SYNC[syncState];
+  renderInstall();
+}
+
+function renderView(){
+  if(view==='dzis')renderDay();else if(view==='tydzien')renderWeek();else if(view==='python')renderPython();else if(view==='mapa')renderMap();else renderSettings();
+}
+function safeRenderView(){if(view==='dzis'&&typing()){pendingDay=true;return;}renderView();}
+function renderAll(){renderBoard();safeRenderView();}
+function route(){
+  const h=(location.hash||'').slice(1);view=VIEWS.includes(h)?h:'dzis';
+  VIEWS.forEach(v=>{document.getElementById('v-'+v).hidden=v!==view;});
+  document.querySelectorAll('.tabs a').forEach(a=>{if(a.getAttribute('href')==='#'+view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+}
+function goDay(k){
+  viewDate=k;weekOff=0;
+  if(view!=='dzis')location.hash='dzis';else renderDay();
+  const t=$('.tabs');if(t&&window.scrollY>t.offsetTop)window.scrollTo({top:t.offsetTop,behavior:'auto'});
+}
+function setDone(k,id,val){
+  const o=S.days[k]||(S.days[k]={done:{}});o.done=o.done||{};
+  const b=blocks(k).find(x=>x.id===id);
+  if(val)o.done[id]=1;else delete o.done[id];
+  if(b&&b.a==='py'){
+    const on=lessonsOn(k);
+    if(val){if(!on.length){const n=nextLesson();if(n)S.py[n]=k;}}
+    else if(on.length)delete S.py[on[on.length-1]];
+  }
+  if(S.timer&&S.timer.d===k&&S.timer.id===id&&val)S.timer=null;
+  save();renderAll();
+}
+function startTimer(id){
+  unlockAudio();
+  const tk=todayKey(),b=blocks(tk).find(x=>x.id===id);if(!b)return;
+  S.timer={d:tk,id,end:Date.now()+b.m*60000};rang=0;save();renderAll();toast('Timer: '+b.m+' min');
+}
+function copyText(txt,ok,fail){try{navigator.clipboard.writeText(txt).then(ok,fail);}catch(e){fail();}}
+
+document.addEventListener('click',unlockAudio,{once:true});
+$('#bNow').addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const a=t.dataset.act,tk=todayKey();
+  if(a==='start')startTimer(t.dataset.id);
+  else if(a==='stop'){S.timer=null;save();renderAll();}
+  else if(a==='done'){setDone(tk,t.dataset.id,true);toast('Odhaczone');}
+});
+$('#bRib').addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t)goDay(t.dataset.go);});
+$('#wRows').addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t)goDay(t.dataset.go);});
+$('#dList').addEventListener('click',e=>{
+  const c=e.target.closest('[data-done]');
+  if(c){const id=c.dataset.done,cur=!!(dayOpt(viewDate).done||{})[id];setDone(viewDate,id,!cur);if(!cur)toast('Odhaczone');return;}
+  const s=e.target.closest('[data-start]');if(s){startTimer(s.dataset.start);return;}
+  const l=e.target.closest('[data-lesson]');if(l)openLesson=Number(l.dataset.lesson);
+});
+$('#dList').addEventListener('input',e=>{
+  const t=e.target.closest('[data-note]');if(!t)return;
+  const k=viewDate,id=t.dataset.note,v=t.value.slice(0,400);
+  if(v.trim()){(S.notes[k]||(S.notes[k]={}))[id]=v;}else if(S.notes[k]){delete S.notes[k][id];if(!Object.keys(S.notes[k]).length)delete S.notes[k];}
+  clearTimeout(noteT);noteT=setTimeout(()=>{save();if(k===todayKey())renderBoard();},700);
+});
+$('#dList').addEventListener('focusout',()=>{setTimeout(()=>{if(pendingDay&&!typing())renderDay();},50);});
+$('#dTog').addEventListener('click',e=>{
+  const t=e.target.closest('[data-tog]');if(!t)return;
+  const k=viewDate,o=S.days[k]||(S.days[k]={done:{}}),f=t.dataset.tog;
+  if(o[f])delete o[f];else o[f]=1;
+  if(S.timer&&S.timer.d===k&&!blocks(k).some(b=>b.id===S.timer.id))S.timer=null;
+  save();renderAll();
+});
+$('#dPrev').addEventListener('click',()=>{viewDate=add(viewDate,-1);renderDay();});
+$('#dNext').addEventListener('click',()=>{viewDate=add(viewDate,1);renderDay();});
+$('#dToday').addEventListener('click',()=>{viewDate=todayKey();renderDay();});
+$('#wPrev').addEventListener('click',()=>{weekOff--;renderWeek();});
+$('#wNext').addEventListener('click',()=>{weekOff++;renderWeek();});
+$('#wNow').addEventListener('click',()=>{viewDate=todayKey();weekOff=0;renderWeek();});
+$('#v-python').addEventListener('click',e=>{
+  const o=e.target.closest('[data-open]');
+  if(o){openLesson=Number(o.dataset.open);renderPython();return;}
+  const d=e.target.closest('[data-pydone]');
+  if(d){S.py[Number(d.dataset.pydone)]=todayKey();save();renderBoard();renderPython();toast('Lekcja zaliczona');return;}
+  const p=e.target.closest('[data-prompt]');
+  if(p){const L=PY[Number(p.dataset.prompt)-1],txt=pyPrompt(L);copyText(txt,()=>toast('Skopiowano, wklej w czacie z Claude'),()=>{const el=$('#pyPrompt');el.textContent=txt;el.hidden=false;toast('Zaznacz tekst i skopiuj ręcznie');});}
+});
+$('#v-python').addEventListener('change',e=>{
+  const t=e.target.closest('[data-pyl]');if(!t)return;
+  const n=Number(t.dataset.pyl);
+  if(t.checked)S.py[n]=todayKey();else delete S.py[n];
+  save();renderBoard();renderPython();
+});
+$('#mGoals').addEventListener('change',e=>{
+  const t=e.target.closest('[data-ms]');if(!t)return;
+  if(t.checked)S.ms[t.dataset.ms]=1;else delete S.ms[t.dataset.ms];
+  save();
+  const c=$('#msCount');if(c)c.textContent=Object.keys(S.ms).length+' z 45';
+});
+$('#sTimes').addEventListener('change',e=>{
+  const t=e.target.closest('[data-day]');if(!t)return;
+  if(RX_T.test(t.value)){S.settings.ready[t.dataset.day]=t.value;save();renderBoard();toast('Zapisano godzinę');}
+});
+$('#sStart').addEventListener('change',e=>{
+  const v=e.target.value;if(RX_D.test(v)){S.settings.start=v;save();renderBoard();toast('Zapisano start planu');}
+});
+$('#sSound').addEventListener('change',e=>{S.settings.sound=e.target.checked;save();if(e.target.checked){unlockAudio();beep();}});
+$('#sInstall').addEventListener('click',async e=>{
+  if(!e.target.closest('#sInst')||!deferredInstall)return;
+  try{deferredInstall.prompt();await deferredInstall.userChoice;}catch(err){}
+  deferredInstall=null;renderInstall();
+});
+$('#sCopy').addEventListener('click',()=>{
+  const txt=JSON.stringify(S);
+  copyText(txt,()=>toast('Skopiowano dane'),()=>{const a=$('#sImp');a.value=txt;a.focus();a.select();toast('Zaznaczone, skopiuj ręcznie');});
+});
+$('#sLoad').addEventListener('click',()=>{
+  const v=$('#sImp').value.trim();if(!v){toast('Najpierw wklej kopię');return;}
+  try{S=normalize(JSON.parse(v));save();$('#sImp').value='';renderAll();toast('Wczytano kopię');}
+  catch(e){toast('To nie wygląda na kopię z tej aplikacji');}
+});
+$('#sReset').addEventListener('click',e=>{
+  const b=e.currentTarget;
+  if(b.dataset.armed){const st=S.settings;S=blank();S.settings=st;save();delete b.dataset.armed;b.textContent='Wyczyść postępy';renderAll();toast('Postępy wyczyszczone');return;}
+  b.dataset.armed='1';b.textContent='Na pewno? Kliknij jeszcze raz';
+  setTimeout(()=>{delete b.dataset.armed;b.textContent='Wyczyść postępy';},4000);
+});
+window.addEventListener('hashchange',()=>{route();renderView();if(!openLesson)window.scrollTo({top:0});});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;renderInstall();});
+
+function tick(){
+  if(!S.timer)return;
+  const left=S.timer.end-Date.now(),el=document.getElementById('cnt');
+  if(left>0){if(el)el.textContent=fmtClock(left);const tm=blocks(todayKey()).find(b=>b.id===S.timer.id);if(tm)document.title=fmtClock(left)+' '+AREAS[tm.a][0];}
+  else if(rang!==S.timer.end){rang=S.timer.end;if(left>-60000)beep();renderBoard();}
+}
+setInterval(tick,1000);
+setInterval(()=>{
+  const t=todayKey();
+  if(t!==lastToday){if(viewDate===lastToday)viewDate=t;lastToday=t;}
+  renderBoard();
+  if(view==='dzis'&&viewDate===t)safeRenderView();
+},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAll();});
+if(IS_PWA&&'serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+
+route();
+renderAll();
+setSync(syncState);
+if(!IS_PWA){if(window.claude)initSync();else setTimeout(initSync,1500);}
+}
+</script>
+</body>
+</html>
