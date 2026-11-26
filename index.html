@@ -566,6 +566,7 @@ const NORM=(()=>{const g={},a={};for(const d in TPL)TPL[d].forEach(b=>{if(b.gap)
 
 function dayOpt(k){return S.days[k]||{done:{}};}
 function planFor(k){
+  if(k<S.settings.start)return [];
   const o=dayOpt(k),wd=wday(k),td=o.free?6:wd;
   let items=TPL[td];
   if(o.lite){const l=[];items.forEach(b=>{if(b.core){if(l.length)l.push({gap:10});l.push(Object.assign({},b,{m:b.lite||b.m}));}});items=l;}
@@ -690,7 +691,7 @@ function renderBoard(){
   const tk=todayKey(),st=dayStat(tk),p=blocks(tk),nm=nowMin(),dn=dayOpt(tk).done||{};
   $('#bDate').textContent=longDate(tk);
   const w=weekNo(tk);
-  $('#bMeta').textContent=w<1?'Rozgrzewka. Plan startuje '+shortDate(S.settings.start)+', ale możesz działać już dziś.':w<=26?'Tydzień '+w+' z 26, sprint '+sprint(tk)+' z 13.':'Pół roku za Tobą. Czas ułożyć nowy plan.';
+  $('#bMeta').textContent=w<1?'Do startu planu nie masz żadnych bloków. Odpocznij.':w<=26?'Tydzień '+w+' z 26, sprint '+sprint(tk)+' z 13.':'Pół roku za Tobą. Czas ułożyć nowy plan.';
   const line=b=>{const t=taskFor(b,tk);return t||noteOf(tk,b.id)||'Ty decydujesz, czym się zajmiesz. Plan wpisz w notatce bloku.';};
   const card=(lbl,b,count,btns)=>'<p class="lbl">'+lbl+'</p><h2>'+esc(AREAS[b.a][0])+'</h2><p class="task">'+esc(line(b))+'</p><div class="nowrow">'+count+btns+'</div>';
   const tm=S.timer&&S.timer.d===tk?p.find(b=>b.id===S.timer.id):null;
@@ -707,6 +708,9 @@ function renderBoard(){
       h=card('Teraz, '+hm(cur.s)+'–'+hm(cur.e),cur,'<span class="count">zostało '+fmtDur(Math.max(1,cur.e-nm))+'</span>','<button class="btn o" data-act="start" data-id="'+esc(cur.id)+'">Start timer</button><button class="btn y" data-act="done" data-id="'+esc(cur.id)+'">Zrobione</button>');
     }else if(next){
       h=card('Następne o '+hm(next.s),next,'<span class="count">za '+fmtDur(Math.max(1,next.s-nm))+'</span>','<button class="btn y" data-act="start" data-id="'+esc(next.id)+'">Zacznij teraz</button>');
+    }else if(!p.length&&tk<S.settings.start){
+      const fb=blocks(S.settings.start)[0];
+      h='<p class="lbl">Przerwa przed startem</p><h2>Start: '+esc(longDate(S.settings.start)).toLowerCase()+'</h2><p class="task">Do tego dnia nie ma żadnych bloków ani zadań.'+(fb?' Pierwszy blok: '+hm(fb.s)+', '+esc(AREAS[fb.a][0]).toLowerCase()+'.':'')+'</p>';
     }else{
       const tb=blocks(add(tk,1))[0];
       h='<p class="lbl">Plan na dziś zamknięty</p><h2>'+(st.r>=.7?'Dobra robota':'Jutro nowy dzień')+'</h2><p class="task">Zrobione '+st.d+' z '+st.t+' min. Jutro zaczynasz o '+(tb?hm(tb.s)+' od bloku '+esc(AREAS[tb.a][0]).toLowerCase():'—')+'.</p>';
@@ -740,6 +744,7 @@ function renderDay(){
   $('#dTog').innerHTML=TOG.map(t=>'<button class="tg" data-tog="'+t[0]+'" aria-pressed="'+(o[t[0]]?'true':'false')+'">'+t[1]+'</button>').join('');
   $('#dHint').textContent=TOG.filter(t=>o[t[0]]).map(t=>t[2]).join(' ');
   $('#dHint').hidden=!TOG.some(t=>o[t[0]]);
+  if(k<S.settings.start){$('#dList').innerHTML='<li class="gap" style="padding-left:0">Plan startuje w '+esc(longDate(S.settings.start)).toLowerCase()+'. Ten dzień jest wolny od bloków.</li>';$('#aBars').innerHTML=barsHTML(weekGroups(monday(k)));return;}
   $('#dList').innerHTML=planFor(k).map(b=>{
     if(b.gap)return '<li class="gap">'+(b.label?esc(b.label)+', '+fmtDur(b.gap)+', do '+hm(b.e):'Przerwa '+fmtDur(b.gap))+'</li>';
     const done=!!dn[b.id],isNow=k===tk&&nm>=b.s&&nm<b.e,gr=AREAS[b.a][1],name=AREAS[b.a][0];
